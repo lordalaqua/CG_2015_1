@@ -10,7 +10,6 @@ class OpenGLVisualizer : public QMainWindow
 
 public:
     OpenGLVisualizer(QWidget *parent = 0);
-    ~OpenGLVisualizer();
 
 private:
     void setupConnections();

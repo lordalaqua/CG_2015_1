@@ -192,7 +192,7 @@ Vector3D<T> rotate(Vector3D<T> v, Vector3D<T> axis, int degrees)
     Vector3D<T> result;
     double theta = degrees*(3.14159265 / 180);
     Vector3D<T> q = getNormalized(axis)*sin(theta/2);
-    float q0 = cos(theta / 2), q1 = q.x, q2 = q.y, q3 = q.z;
+    double q0 = cos(theta / 2), q1 = q.x, q2 = q.y, q3 = q.z;
 
     result.x = (1 - 2 * (q2*q2 + q3*q3))*v.x + 2 * (q1*q2 - q0*q3)*v.y + 2 * (q1*q3 + q0*q2)*v.z;
     result.y = 2 * (q1*q2 + q0*q3)*v.x + (1 - 2 * (q1*q1 + q3*q3))*v.y + 2 * (q2*q3 - q0*q1)*v.z;
