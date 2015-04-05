@@ -32,6 +32,7 @@ void OpenGLWindowWidget::initializeGL()
     glClearDepth(1);
     glFrontFace(winding_order);
     glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
     glEnable(GL_NORMALIZE);
     glEnable(GL_DEPTH_TEST);
     resetCamera();
