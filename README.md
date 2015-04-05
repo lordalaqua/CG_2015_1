@@ -1,4 +1,4 @@
-#INF01009/CMP143 Computação Gráfica / Computer Graphics#
+#INF01009/CMP143 Comuter Graphics#
 ## Course Project Repository - Lorenzo Dal'Aqua ##
 
 Repository to keep exercises and projects related to UFRGS' (Universidade Federal
