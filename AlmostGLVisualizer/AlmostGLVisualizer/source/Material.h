@@ -2,7 +2,10 @@
 #define Material_h__
 
 #include "Vector3D.h"
-
+/*
+    3D model material information
+    Diffuse, ambient, specular colors, and material shine.
+*/
 class Material
 {
 public:

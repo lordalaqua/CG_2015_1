@@ -20,9 +20,6 @@
     <ClCompile Include="Triangle3D-test.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
-    <ClCompile Include="Vector3D-Test.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\AlmostGLVisualizer\source\Material.cpp">
       <Filter>Project Files</Filter>
     </ClCompile>
@@ -35,6 +32,12 @@
     <ClCompile Include="Matrix-test.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
+    <ClCompile Include="Vector3D-Test.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector-Test.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\AlmostGLVisualizer\source\Model3D.h">
@@ -43,18 +46,21 @@
     <ClInclude Include="..\AlmostGLVisualizer\source\Triangle3D.h">
       <Filter>Project Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\AlmostGLVisualizer\source\Vector3D.h">
-      <Filter>Project Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\AlmostGLVisualizer\source\Material.h">
       <Filter>Project Files</Filter>
     </ClInclude>
     <ClInclude Include="..\AlmostGLVisualizer\source\Matrix.h">
       <Filter>Project Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\AlmostGLVisualizer\source\Vector3D.h">
+      <Filter>Project Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\AlmostGLVisualizer\source\Vector3D.inl">
+      <Filter>Project Files</Filter>
+    </None>
+    <None Include="..\AlmostGLVisualizer\source\Matrix.inl">
       <Filter>Project Files</Filter>
     </None>
   </ItemGroup>

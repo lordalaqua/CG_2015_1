@@ -5,12 +5,19 @@
 #include "QOpenGLFunctions"
 #include <QTimer>
 #include "GL/GLU.h"
-
 #include <cmath>
-
 #include "Model3D.h"
 #include "Vector3D.h"
 
+/*
+    OpenGLWindowWidget
+
+    QOpenGLWidget Specialization for exhibition of some simple operations in
+    OpenGL such as camera rotation and translation, changes in FOV and near and
+    far planes.
+
+    Changes state of OpenGL application based on user interface commands.
+*/
 
 class OpenGLWindowWidget : public QOpenGLWidget, public QOpenGLFunctions
 {

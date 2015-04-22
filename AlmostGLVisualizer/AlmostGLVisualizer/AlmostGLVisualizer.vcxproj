@@ -104,10 +104,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="source\AlmostGLPipeline.cpp" />
+    <ClCompile Include="source\Camera.cpp" />
     <ClCompile Include="source\Material.cpp" />
+    <ClCompile Include="source\Matrix.inl" />
     <ClCompile Include="source\Model3D.cpp" />
     <ClCompile Include="source\OpenGLWindowWidget.cpp" />
-    <ClCompile Include="source\Triangle3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="almostglvisualizer.h">
@@ -134,6 +136,8 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\AlmostGLPipeline.h" />
+    <ClInclude Include="source\Camera.h" />
     <ClInclude Include="source\Matrix.h" />
     <CustomBuild Include="AlmostGLWindowWidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -149,6 +153,7 @@
     <ClInclude Include="source\Material.h" />
     <ClInclude Include="source\Model3D.h" />
     <ClInclude Include="source\Triangle3D.h" />
+    <ClInclude Include="source\Vector.h" />
     <ClInclude Include="source\Vector3D.h" />
     <CustomBuild Include="source\OpenGLWindowWidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -177,6 +182,7 @@
     <ResourceCompile Include="AlmostGLVisualizer.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="source\Vector.inl" />
     <None Include="source\Vector3D.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -8,6 +8,15 @@
 #include <fstream>
 #include <limits>
 
+/*
+    3D model wrapper
+
+    Class holds information about 3D models defined in a text file in the format
+    defined in UFRGS INF01009 Computer Graphics Course.
+
+    Hold triangles, materials and bounding box related to the model.
+*/
+
 class Model3D
 {
 public:

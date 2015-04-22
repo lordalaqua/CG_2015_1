@@ -65,9 +65,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_OpenGLWindowWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="source\Triangle3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AlmostGLWindowWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -76,6 +73,15 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_AlmostGLWindowWidget.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Matrix.inl">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AlmostGLPipeline.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -108,10 +114,19 @@
     <ClInclude Include="source\Triangle3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\Matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="source\Vector3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\Matrix.h">
+    <ClInclude Include="source\Vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AlmostGLPipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -120,6 +135,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="source\Vector3D.inl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="source\Vector.inl">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

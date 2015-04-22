@@ -12,9 +12,9 @@ OpenGLWindowWidget::OpenGLWindowWidget(QWidget *parent)
 , lighting_on(false)
 , lighting_mode(GL_SMOOTH)
 , fixed_center(false)
-, field_of_view_x(45)
-, field_of_view_y(45)
-, zNear(0.1)
+, field_of_view_x(60)
+, field_of_view_y(60)
+, zNear(1)
 , zFar(10000.0)
 , camera_x(1, 0, 0)
 , camera_y(0, 1, 0)
@@ -70,7 +70,7 @@ void OpenGLWindowWidget::paintGL()
     glPolygonMode(GL_FRONT_AND_BACK, polygon_mode);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBegin(GL_TRIANGLES);
-    for (auto triangle : model.triangles)
+    for (const auto& triangle : model.triangles)
     {
         for (int i = 0; i < 3; ++i)
         {            
@@ -99,7 +99,7 @@ void OpenGLWindowWidget::recalculateOriginalPositions()
         model.min.y + (model.max.y - model.min.y) / 2,
         model.min.z + (model.max.z - model.min.z) / 2 };
     float max = std::max(model.max.x - model.min.x, model.max.y - model.min.y);
-    camera_original_position = object_center + Vector3f(5, 5, 1.5*(max));
+    camera_original_position = object_center + Vector3f(0, 0, 1.5*(max));
 }
 
 void OpenGLWindowWidget::findWindingOrder()
@@ -121,9 +121,11 @@ void OpenGLWindowWidget::resetCamera()
 {
     camera_x = { 1, 0, 0 };
     camera_y = { 0, 1, 0 };
-    camera_z = { 0, 0, -1 };
-    field_of_view_x = 45;
-    field_of_view_y = 45;
+    camera_z = { 0, 0, 1 };
+    field_of_view_x = 60;
+    field_of_view_y = 60;
+    zNear = 1;
+    zFar = 10000;
     emit FOVXchanged();
     emit FOVYchanged();    
     camera_look = object_center;
@@ -188,7 +190,7 @@ void OpenGLWindowWidget::translateCameraX(float x)
     if (fixed_center)
     {
         camera_position = camera_position + x*camera_x;
-        camera_z = (camera_look - camera_position).normalize();
+        camera_z = -(camera_look - camera_position).normalize();
         camera_x = crossProduct(camera_y, camera_z).normalize();
     }
     else
@@ -204,8 +206,8 @@ void OpenGLWindowWidget::translateCameraY(float y)
     if (fixed_center)
     {
         camera_position = camera_position + y*camera_y;
-        camera_z = (camera_look - camera_position).normalize();
-        camera_y = crossProduct(camera_x, camera_z).normalize();
+        camera_z = -(camera_look - camera_position).normalize();
+        camera_y = crossProduct(camera_z, camera_x).normalize();
     }
     else
     {

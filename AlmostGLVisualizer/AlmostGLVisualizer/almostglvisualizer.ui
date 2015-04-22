@@ -263,8 +263,14 @@
          <layout class="QHBoxLayout" name="layoutFOVX">
           <item>
            <widget class="QLabel" name="labelFOVX">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>FOV X</string>
+             <string>H FOV</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -300,13 +306,13 @@
           <item>
            <widget class="QLabel" name="labelFOVY">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="text">
-             <string>FOV Y</string>
+             <string>V FOV</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -316,7 +322,7 @@
           <item>
            <widget class="QSlider" name="sliderFOVY">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+             <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -358,7 +364,7 @@
              </size>
             </property>
             <property name="text">
-             <string>0.1</string>
+             <string>1</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -409,6 +415,18 @@
          <layout class="QVBoxLayout" name="RedLayout">
           <item>
            <widget class="QSlider" name="sliderRed">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
             <property name="maximum">
              <number>255</number>
             </property>
@@ -417,6 +435,12 @@
             </property>
             <property name="orientation">
              <enum>Qt::Vertical</enum>
+            </property>
+            <property name="invertedAppearance">
+             <bool>false</bool>
+            </property>
+            <property name="invertedControls">
+             <bool>false</bool>
             </property>
             <property name="tickPosition">
              <enum>QSlider::NoTicks</enum>
@@ -439,6 +463,12 @@
          <layout class="QVBoxLayout" name="GreenLayout">
           <item>
            <widget class="QSlider" name="sliderGreen">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="maximum">
              <number>255</number>
             </property>
@@ -463,6 +493,12 @@
          <layout class="QVBoxLayout" name="BlueLayout">
           <item>
            <widget class="QSlider" name="sliderBlue">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="maximum">
              <number>255</number>
             </property>
@@ -499,6 +535,12 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
         </property>
         <property name="title">
          <string>Lighting Mode</string>
@@ -712,7 +754,7 @@
          <item>
           <widget class="OpenGLWindowWidget" name="openGLWidget">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -747,9 +789,9 @@
           <number>5</number>
          </property>
          <item>
-          <widget class="QOpenGLWidget" name="almostGLWidget">
+          <widget class="AlmostGLWindowWidget" name="almostGLWidget">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -790,13 +832,18 @@
    <extends>QOpenGLWidget</extends>
    <header>OpenGLWindowWidget.h</header>
   </customwidget>
+  <customwidget>
+   <class>AlmostGLWindowWidget</class>
+   <extends>QOpenGLWidget</extends>
+   <header>AlmostGLWindowWidget.h</header>
+  </customwidget>
  </customwidgets>
  <resources>
   <include location="almostglvisualizer.qrc"/>
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="polygonMode"/>
   <buttongroup name="frontFace"/>
+  <buttongroup name="polygonMode"/>
  </buttongroups>
 </ui>

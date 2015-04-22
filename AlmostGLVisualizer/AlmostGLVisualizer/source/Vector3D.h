@@ -2,9 +2,15 @@
 #define VECTOR3D_HPP_
 
 #include <initializer_list>
-#include <cassert>
-#include <cmath>
+/*
+    Vector3D
+    3-Dimensional vector used for mathematical operations.
+    Supports addition, subtraction, element-wise multiplication and division,
+    scalar multiplication and division, dot and cross products and rotations
+    around an arbitrary 3D axis.
 
+    TODO: resolve replication between arbitrary Vector<SIZE,type> and this.
+*/
 template<typename T>
 class Vector3D
 {
@@ -17,15 +23,15 @@ public:
     ~Vector3D() {};
 
     double length();
-    Vector3D& normalize();
+    Vector3D<T>& normalize();
 
-    Vector3D& operator=(const Vector3D& other);
-    Vector3D& operator+=(const Vector3D& other);
-    Vector3D& operator-=(const Vector3D& other);
-    Vector3D& operator*=(const Vector3D& other);
-    Vector3D& operator/=(const Vector3D& other);
-    template<typename S> Vector3D& operator*=(S scalar);
-    template<typename S> Vector3D& operator/=(S scalar);
+    Vector3D<T>& operator=(const Vector3D<T>& other);
+    Vector3D<T>& operator+=(const Vector3D<T>& other);
+    Vector3D<T>& operator-=(const Vector3D<T>& other);
+    Vector3D<T>& operator*=(const Vector3D<T>& other);
+    Vector3D<T>& operator/=(const Vector3D<T>& other);
+    template<typename S> Vector3D<T>& operator*=(S scalar);
+    template<typename S> Vector3D<T>& operator/=(S scalar);
 public:
     T x, y, z;
 };

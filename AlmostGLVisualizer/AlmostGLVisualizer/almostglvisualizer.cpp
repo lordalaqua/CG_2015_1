@@ -6,14 +6,15 @@ AlmostGLVisualizer::AlmostGLVisualizer(QWidget *parent)
 {
     ui.setupUi(this);
     setupOpenGLWidgetConnections();
+    setupAlmostGLWidgetConnections();
 }
 
 void AlmostGLVisualizer::setupAlmostGLWidgetConnections()
 {
 //     // Color input sliders
-//     connect(ui.sliderRed, &QSlider::valueChanged, [&]{ ui.openGLWidget->setColorR(ui.sliderRed->value() / 255.0); });
-//     connect(ui.sliderGreen, &QSlider::valueChanged, [&]{ ui.openGLWidget->setColorG(ui.sliderGreen->value() / 255.0); });
-//     connect(ui.sliderBlue, &QSlider::valueChanged, [&]{ ui.openGLWidget->setColorB(ui.sliderBlue->value() / 255.0); });
+    connect(ui.sliderRed, &QSlider::valueChanged, [&]{ ui.almostGLWidget->setColorR(ui.sliderRed->value() / 255.0); });
+    connect(ui.sliderGreen, &QSlider::valueChanged, [&]{ ui.almostGLWidget->setColorG(ui.sliderGreen->value() / 255.0); });
+    connect(ui.sliderBlue, &QSlider::valueChanged, [&]{ ui.almostGLWidget->setColorB(ui.sliderBlue->value() / 255.0); });
 // 
 //     // Enable Lighting Checkbox
 //     connect(ui.checkBoxLighting, &QCheckBox::stateChanged, [&]{ui.openGLWidget->toggleLighting(ui.checkBoxLighting->isChecked()); });
@@ -29,47 +30,41 @@ void AlmostGLVisualizer::setupAlmostGLWidgetConnections()
 //     {ui.openGLWidget->windingOrder() == GL_CW ? ui.radioButtonCW->setChecked(true) : ui.radioButtonCCW->setChecked(true); });
 // 
 //     // Polygon mode radio buttons
-//     connect(ui.radioButtonFill, &QRadioButton::toggled, [&]{ui.openGLWidget->switchPolygonMode(GL_FILL); });
-//     connect(ui.radioButtonLine, &QRadioButton::toggled, [&]{ui.openGLWidget->switchPolygonMode(GL_LINE); });
-//     connect(ui.radioButtonPoint, &QRadioButton::toggled, [&]{ui.openGLWidget->switchPolygonMode(GL_POINT); });
+    connect(ui.radioButtonFill, &QRadioButton::toggled, [&]{ui.almostGLWidget->switchPolygonMode(GL_FILL); });
+    connect(ui.radioButtonLine, &QRadioButton::toggled, [&]{ui.almostGLWidget->switchPolygonMode(GL_LINE); });
+    connect(ui.radioButtonPoint, &QRadioButton::toggled, [&]{ui.almostGLWidget->switchPolygonMode(GL_POINT); });
 // 
 //     // Load model file dialog button
-//     connect(ui.buttonLoadFile, &QPushButton::clicked, [&]{
-//         QString filename = QFileDialog::getOpenFileName(this, tr("Open Model File..."), QString());
-//         ui.openGLWidget->loadModel(filename.toStdString());
-//     });
+    connect(ui.buttonLoadFile, &QPushButton::clicked, [&]{
+        QString filename = QFileDialog::getOpenFileName(this, tr("Open Model File..."), QString());
+        ui.almostGLWidget->loadModel(filename.toStdString());
+    });
 // 
 //     // Znear and Zfar plane controls
-//     connect(ui.lineEditNear, &QLineEdit::textChanged, [&]{ui.openGLWidget->setZNear(ui.lineEditNear->text().toFloat()); });
-//     connect(ui.lineEditFar, &QLineEdit::textChanged, [&]{ui.openGLWidget->setZFar(ui.lineEditFar->text().toFloat()); });
+    connect(ui.lineEditNear, &QLineEdit::textChanged, [&]{ui.almostGLWidget->setZNear(ui.lineEditNear->text().toFloat()); });
+     connect(ui.lineEditFar, &QLineEdit::textChanged, [&]{ui.almostGLWidget->setZFar(ui.lineEditFar->text().toFloat()); });
 // 
 //     // Field of view controls
-//     connect(ui.sliderFOVX, &QSlider::valueChanged, [&]{ ui.openGLWidget->setFOVX(ui.sliderFOVX->value()); });
-//     connect(ui.sliderFOVY, &QSlider::valueChanged, [&]{ ui.openGLWidget->setFOVY(ui.sliderFOVY->value()); });
-//     connect(ui.openGLWidget, &OpenGLWindowWidget::FOVXchanged, [&]{ui.sliderFOVX->setValue(ui.openGLWidget->fieldOfViewX()); });
-//     connect(ui.openGLWidget, &OpenGLWindowWidget::FOVYchanged, [&]{ui.sliderFOVY->setValue(ui.openGLWidget->fieldOfViewY()); });
+     connect(ui.sliderFOVX, &QSlider::valueChanged, [&]{ ui.almostGLWidget->setFOVX(ui.sliderFOVX->value()); });
+     connect(ui.sliderFOVY, &QSlider::valueChanged, [&]{ ui.almostGLWidget->setFOVY(ui.sliderFOVY->value()); });
+     connect(ui.openGLWidget, &OpenGLWindowWidget::FOVXchanged, [&]{ui.sliderFOVX->setValue(ui.almostGLWidget->fieldOfViewX()); });
+     connect(ui.openGLWidget, &OpenGLWindowWidget::FOVYchanged, [&]{ui.sliderFOVY->setValue(ui.almostGLWidget->fieldOfViewY()); });
 // 
 //     // Reset Camera button
-//     connect(ui.buttonResetCamera, &QPushButton::clicked, [&]{ui.openGLWidget->setCameraReset(); });
-// 
+     connect(ui.buttonResetCamera, &QPushButton::clicked, [&]{ui.almostGLWidget->setCameraReset(); });
+ 
 //     // Fixed center translation checkbox
-//     connect(ui.checkBoxFixedCenter, &QCheckBox::stateChanged, [&]{ui.openGLWidget->setFixedCenter(ui.checkBoxFixedCenter->isChecked()); });
-// 
+     connect(ui.checkBoxFixedCenter, &QCheckBox::stateChanged, [&]{ui.almostGLWidget->setFixedCenter(ui.checkBoxFixedCenter->isChecked()); });
+ 
 //     // Translation sliders
-//     connect(ui.sliderTransX, &QSlider::valueChanged, [&] { ui.openGLWidget->translateCameraX(ui.sliderTransX->value()); });
-//     connect(ui.sliderTransX, &QSlider::sliderReleased, [&] { ui.sliderTransX->setValue(0); });
-//     connect(ui.sliderTransY, &QSlider::valueChanged, [&] { ui.openGLWidget->translateCameraY(ui.sliderTransY->value()); });
-//     connect(ui.sliderTransY, &QSlider::sliderReleased, [&] { ui.sliderTransY->setValue(0); });
-//     connect(ui.sliderTransZ, &QSlider::valueChanged, [&] { ui.openGLWidget->translateCameraZ(ui.sliderTransZ->value()); });
-//     connect(ui.sliderTransZ, &QSlider::sliderReleased, [&] { ui.sliderTransZ->setValue(0); });
-// 
+     connect(ui.sliderTransX, &QSlider::valueChanged, [&] { ui.almostGLWidget->translateCameraX(ui.sliderTransX->value()); });
+    connect(ui.sliderTransY, &QSlider::valueChanged, [&] { ui.almostGLWidget->translateCameraY(ui.sliderTransY->value()); });
+    connect(ui.sliderTransZ, &QSlider::valueChanged, [&] { ui.almostGLWidget->translateCameraZ(ui.sliderTransZ->value()); });
+ 
 //     // Rotation sliders
-//     connect(ui.sliderRotX, &QSlider::valueChanged, [&] { ui.openGLWidget->rotateCameraX(ui.sliderRotX->value()); });
-//     connect(ui.sliderRotX, &QSlider::sliderReleased, [&] { ui.sliderRotX->setValue(0); });
-//     connect(ui.sliderRotY, &QSlider::valueChanged, [&] { ui.openGLWidget->rotateCameraY(ui.sliderRotY->value()); });
-//     connect(ui.sliderRotY, &QSlider::sliderReleased, [&] { ui.sliderRotY->setValue(0); });
-//     connect(ui.sliderRotZ, &QSlider::valueChanged, [&] { ui.openGLWidget->rotateCameraZ(ui.sliderRotZ->value()); });
-//     connect(ui.sliderRotZ, &QSlider::sliderReleased, [&] { ui.sliderRotZ->setValue(0); });
+    connect(ui.sliderRotX, &QSlider::valueChanged, [&] { ui.almostGLWidget->rotateCameraX(ui.sliderRotX->value()); });
+    connect(ui.sliderRotY, &QSlider::valueChanged, [&] { ui.almostGLWidget->rotateCameraY(ui.sliderRotY->value()); });
+    connect(ui.sliderRotZ, &QSlider::valueChanged, [&] { ui.almostGLWidget->rotateCameraZ(ui.sliderRotZ->value()); });
 }
 
 // Connect GUI elements to desired functions in the OpenGL widget

@@ -4,6 +4,16 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_almostglvisualizer.h"
 
+/*
+    Main Application window class
+
+    Holds the user interface designed in Qt Designer and inherits from
+    Qt modules for generating the main window of the GUI.
+
+    Setups connections between interface elements and functions in OpenGL
+    and AlmostGL widgets.
+*/
+
 class AlmostGLVisualizer : public QMainWindow
 {
     Q_OBJECT

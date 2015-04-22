@@ -126,12 +126,10 @@ TEST(Vector3DCrossProduct)
     CHECK(Vector3d(-5,-11,-2) == crossProduct(v4, v5));
 }
 
-TEST(VectorRotation)
+TEST(Vector3DRotation)
 {
     Vector3f v1{ 1, 0, 0 };
     Vector3f v2{ 0, 1, 0 };
     Vector3f v3{ 0, 0, 1 };
-    std::cout << rotate(v1, v2, 180);
-    std::cin.get();
     CHECK_CLOSE(-v1.x,rotate(v1, v2, 180).x,0.001);
 }

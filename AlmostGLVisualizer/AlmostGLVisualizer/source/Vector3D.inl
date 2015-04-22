@@ -1,14 +1,15 @@
-//#include "Vector3D.hpp"
 #ifndef Vector3D_inl__
 #define Vector3D_inl__
 
+#include<cassert>
 #include <iostream>
 #include <cmath>
 /************************** Member Functions **********************************/
 template<typename T>
 Vector3D<T>::Vector3D(std::initializer_list<T> list)
 {
-    assert(list.size() == 3);
+    if (list.size() != 3)
+        throw 1; // TODO: proper exception type
     auto it = list.begin();
     x = *it++;
     y = *it++;
