@@ -2,7 +2,7 @@
 
 OpenGLWindowWidget::OpenGLWindowWidget(QWidget *parent) 
 : QOpenGLWidget(parent)
-, color(1.0, 0.0, 0.0)
+, color({ 1.0, 0.0, 0.0 })
 , polygon_mode(GL_FILL)
 , winding_order (GL_CCW)
 , update_camera(false)
@@ -16,9 +16,9 @@ OpenGLWindowWidget::OpenGLWindowWidget(QWidget *parent)
 , field_of_view_y(60)
 , zNear(1)
 , zFar(10000.0)
-, camera_x(1, 0, 0)
-, camera_y(0, 1, 0)
-, camera_z(0, 0, -1)
+, camera_x({ 1, 0, 0 })
+, camera_y({ 0, 1, 0 })
+, camera_z({ 0, 0, -1 })
 {
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.start(100);
@@ -99,7 +99,7 @@ void OpenGLWindowWidget::recalculateOriginalPositions()
         model.min.y + (model.max.y - model.min.y) / 2,
         model.min.z + (model.max.z - model.min.z) / 2 };
     float max = std::max(model.max.x - model.min.x, model.max.y - model.min.y);
-    camera_original_position = object_center + Vector3f(0, 0, 1.5*(max));
+    camera_original_position = object_center + Vector3f{ 0, 0, 1.5f*(max) };
 }
 
 void OpenGLWindowWidget::findWindingOrder()

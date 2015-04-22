@@ -1,7 +1,7 @@
 #ifndef Material_h__
 #define Material_h__
 
-#include "Vector3D.h"
+#include "Vector.h"
 /*
     3D model material information
     Diffuse, ambient, specular colors, and material shine.

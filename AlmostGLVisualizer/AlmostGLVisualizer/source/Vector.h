@@ -3,7 +3,6 @@
 
 #include <initializer_list>
 #include <cassert>
-#include "Vector3D.h"
 
 /*
     Vector<SIZE,T>
@@ -12,25 +11,16 @@
     scalar multiplication and division, and dot product.
     (Cross products and rotations around an arbitrary 3D axis are supported
     for 3-dimensional variant).
-
-    TODO: resolve replication between arbitrary Vector3D and this.
 */
 template<int SIZE,typename T>
 class Vector
 {
 public:
-    Vector(){}
+    Vector();    
     Vector(T value);
     Vector(const Vector<SIZE,T>& other);
     Vector(std::initializer_list<T> list);
-    Vector(const Vector3D<T>& old) 
-    {
-        assert(SIZE == 4);
-        data_[0] = old.x;
-        data_[1] = old.y;
-        data_[2] = old.z;
-        data_[3] = 1;
-    }
+    Vector(const Vector<SIZE - 1, T>& other);
     T* begin();
     T* end();
     double length();
@@ -45,9 +35,16 @@ public:
     Vector<SIZE, T>& operator/=(const Vector<SIZE, T>& other);
     template<typename S> Vector<SIZE, T>& operator*=(S scalar);
     template<typename S> Vector<SIZE, T>& operator/=(S scalar);
+public:
+    T& x;
+    T& y;
+    T& z;
+    T& w;
 private:
     T data_[SIZE];
 };
+
+typedef Vector<3,float> Vector3f;
 
 #include "Vector.inl"
 

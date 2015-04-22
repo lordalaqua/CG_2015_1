@@ -6,23 +6,40 @@
 #include <cmath>
 /************************** Member Functions **********************************/
 template<int SIZE, typename T>
-Vector<SIZE, T>::Vector(T value)
+Vector<SIZE, T>::Vector()
+: x(data_[0])
+, y(SIZE > 1 ? data_[1] : data_[0])
+, z(SIZE > 2 ? data_[2] : data_[0])
+, w(SIZE > 3 ? data_[3] : data_[0])
+{
+    //empty
+}
+
+template<int SIZE, typename T>
+Vector<SIZE, T>::Vector(T value) : Vector()
 {
     for (int i = 0; i < SIZE; ++i)
         data_[i] = value;
 }
 
 template<int SIZE, typename T>
-Vector<SIZE, T>::Vector(const Vector<SIZE, T>& other)
+Vector<SIZE, T>::Vector(const Vector<SIZE, T>& other) : Vector()
 {
     *this = other;
 }
 
 template<int SIZE, typename T>
-Vector<SIZE, T>::Vector(std::initializer_list<T> list)
+Vector<SIZE, T>::Vector(std::initializer_list<T> list) : Vector()
 {
-    // Reuse assignment operator to avoid repetition
     *this = list;
+}
+
+template<int SIZE, typename T>
+Vector<SIZE, T>::Vector(const Vector<SIZE - 1, T>& other) : Vector()
+{
+    for (int i = 0; i < SIZE - 1; ++i)
+        data_[i] = other[i];
+    data_[SIZE - 1] = 1;
 }
 
 template<int SIZE, typename T>

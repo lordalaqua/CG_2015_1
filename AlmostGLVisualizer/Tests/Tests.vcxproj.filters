@@ -32,9 +32,6 @@
     <ClCompile Include="Matrix-test.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
-    <ClCompile Include="Vector3D-Test.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
     <ClCompile Include="Vector-Test.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>

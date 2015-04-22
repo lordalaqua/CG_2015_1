@@ -9,8 +9,11 @@ TEST(VectorConstructorsAssignmentAndEqualityTest)
     Vector<3,int> v3(v2);
     Vector<3,int> v4{ 1, 2, 3 };
     Vector<3,int> v5 = v1;
-    v5[0]--;
 
+    CHECK(v5[0]-- == v5.x);
+    CHECK(v5[1]-- == v5.y);
+    CHECK(v5.z-- == v5[2]);
+    CHECK(v5.w == v5[0]);
     CHECK(v1 == v1);
     CHECK(v2 == v3);
     CHECK(v4 == v1);

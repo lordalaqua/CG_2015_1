@@ -1,7 +1,7 @@
 #include "AlmostGLWindowWidget.h"
 
 AlmostGLWindowWidget::AlmostGLWindowWidget(QWidget *parent) : QOpenGLWidget(parent)
-, color(1.0, 0.0, 0.0)
+, color({ 1.0, 0.0, 0.0 })
 , polygon_mode(GL_FILL)
 , update_camera(false)
 , reset_camera(false)
@@ -86,7 +86,7 @@ void AlmostGLWindowWidget::recalculateOriginalPositions()
         model.min.z + (model.max.z - model.min.z) / 2 };
     float max = std::max(model.max.x - model.min.x, model.max.y - model.min.y);
     camera.setResetLookAt(object_center);
-    camera.setResetPosition(object_center + Vector3f(0, 0, 1.5*(max)));
+    camera.setResetPosition(object_center + Vector3f{ 0, 0, 1.5f*(max) });
 }
 
 

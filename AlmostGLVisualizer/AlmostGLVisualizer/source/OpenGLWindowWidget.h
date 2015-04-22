@@ -7,7 +7,7 @@
 #include "GL/GLU.h"
 #include <cmath>
 #include "Model3D.h"
-#include "Vector3D.h"
+#include "Vector.h"
 
 /*
     OpenGLWindowWidget

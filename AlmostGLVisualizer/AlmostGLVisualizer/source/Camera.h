@@ -1,7 +1,7 @@
 #ifndef Camera_h__
 #define Camera_h__
 
-#include "Vector3D.h"
+#include "Vector.h"
 
 /*
     3D Camera

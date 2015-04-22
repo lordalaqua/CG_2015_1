@@ -1,7 +1,7 @@
 #ifndef Triangle3D_h__
 #define Triangle3D_h__
 
-#include "Vector3D.h"
+#include "Vector.h"
 /*
     3D triangle (semi-plane) wrapper
     Stores information about a CG triangle for rendering,
