@@ -14,13 +14,13 @@ namespace AlmostGL
             { n.x, n.y, n.z, dotProduct(-position, n) },
             { 0, 0, 0, 1 } };
 
-        // 
         /* Compute Projection Matrix
         
             -Shearing element was removed for performance since interface provided
             enforces a symmetric field of view
-            -Scale elements were substituted by variants 
-
+            -Scale elements were substituted by equivalents of 1/(r-l) and 1/(t-b)
+            obtained calculating tangent of field of view angle.
+            TODO: still some problems with near plane clipping
         */
 
         float znear = camera.Znear();

@@ -35,6 +35,7 @@ namespace AlmostGL
     - Model contains vertices (triangles) to be drawn.
     - Camera contains camera position and orientation for frustum calculation.
     - VP(viewport) top,bottom,left,right parameters define viewport.
+    TODO: wrap viewport argument in proper structure
     */
     std::vector<Triangle4D> runPipeline(const Model3D& model, const Camera& camera,
         float vp_left, float vp_right, float vp_top, float vp_bottom);
