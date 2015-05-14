@@ -6,7 +6,12 @@ do Rio Grande do Sul) Computer Graphics Course.
 
 * EnviromentTest (Complementary Assignment 1)
 * OpenGLVisualizer (Programming Assignment 1)
-* AlmostGLVisualizer (Programming Assignment 2)
+* AlmostGLVisualizer (Programming Assignment 2,3,4)
+
+Branches:
+* Master - Programming Assignment 2 in due date
+* Assignment2Revised - Completed Programming Assignment 2
+* Assignment3 - Programming Assignment 3 in due date
 
 
 By Lorenzo Pezzi Dal'Aqua
