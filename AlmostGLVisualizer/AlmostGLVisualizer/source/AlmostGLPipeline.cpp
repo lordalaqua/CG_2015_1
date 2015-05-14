@@ -25,10 +25,10 @@ namespace AlmostGL
 
         float znear = camera.Znear();
         float zfar = camera.Zfar();
-        float Vfov_rad = degreeToRadians(camera.Vfov() / 2.f);
-        float Hfov_rad = degreeToRadians(camera.Hfov() / 2.f);
-        float topBottom = 1.f / tan(Vfov_rad);
-        float leftRight = 1.f / tan(Hfov_rad);
+        double Vfov_rad = degreeToRadians(camera.Vfov() / 2.f);
+        float aspect = camera.Hfov() / camera.Vfov();
+        float topBottom = (float) (1.0 / tan(Vfov_rad));
+        float leftRight = topBottom / aspect;
         Matrix4x4f projection_matrix = {
             { leftRight, 0, 0, 0 },
             { 0, topBottom, 0, 0 },
