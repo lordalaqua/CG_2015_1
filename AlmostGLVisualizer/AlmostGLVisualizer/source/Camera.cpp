@@ -14,7 +14,7 @@ void Camera::reset()
     n_ = { 0, 0, 1 };
     h_fov_ = 60;
     v_fov_ = 60;
-    z_near_ = -1;
+    z_near_ = 1;
     z_far_ = 10000;
     look_at_ = reset_look_at_;
 }

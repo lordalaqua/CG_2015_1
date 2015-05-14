@@ -30,6 +30,7 @@ public:
     float fieldOfViewY() { return camera.Vfov(); }
 
 signals:
+    void windingOrderChanged();
     void FOVXchanged();
     void FOVYchanged();
  public slots:
@@ -40,6 +41,7 @@ signals:
 
     // Lighting, vertex order and polygon mode(polygons,wireframe,etc)controls
     void switchPolygonMode(GLenum mode) { polygon_mode = mode; }
+    void setWindingOrder(AlmostGL::WindingOrder w) { winding_order = w; update_camera = true; }
 
     // Model load interface
     void loadModel(std::string filename);
@@ -66,6 +68,7 @@ private:
     void updateCamera();
     void resetCamera();
     void recalculateOriginalPositions();
+    void findWindingOrder();
 
 private: //fields
     // 3D model and object position (without any transform)
@@ -76,11 +79,12 @@ private: //fields
     // Virtual camera and original position based on model load.
     Camera camera;
     Vector3f camera_original_position;
-    float viewport_left, viewport_right, viewport_bottom, viewport_top;
+    AlmostGL::ViewPort viewport;
 
     // Color and lighting variables
     Vector3f color;
     GLenum polygon_mode;
+    AlmostGL::WindingOrder winding_order;
 
     // Flags for keeping track of what needs updating
     bool fixed_center;

@@ -3,16 +3,14 @@
 AlmostGLWindowWidget::AlmostGLWindowWidget(QWidget *parent) : QOpenGLWidget(parent)
 , color({ 1.0, 0.0, 0.0 })
 , polygon_mode(GL_FILL)
+, winding_order(AlmostGL::CCW)
 , update_camera(false)
 , reset_camera(false)
-, viewport_left(0.0)
-, viewport_right(0.0)
-, viewport_bottom(0.0)
-, viewport_top(0.0)
+, viewport()
 , fixed_center(false)
 {
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer.start(100);
+    timer.start(50);
 }
 
 void AlmostGLWindowWidget::initializeGL()
@@ -61,12 +59,12 @@ void AlmostGLWindowWidget::paintGL()
 
 void AlmostGLWindowWidget::updateCamera()
 {
-    viewport_left = 0.0; viewport_right = this->width();
-    viewport_bottom = 0.0; viewport_top = this->height();
+    viewport.left = 0.0; viewport.right = this->width();
+    viewport.bottom = 0.0; viewport.top = this->height();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();    
-    gluOrtho2D(viewport_left,viewport_right,viewport_bottom,viewport_top);
-    triangles = AlmostGL::runPipeline(model, camera, viewport_left, viewport_right, viewport_top, viewport_bottom);
+    gluOrtho2D(viewport.left,viewport.right,viewport.bottom,viewport.top);
+    triangles = AlmostGL::runPipeline(model, camera, viewport, winding_order);
     glFlush();
 }
 
@@ -95,6 +93,7 @@ void AlmostGLWindowWidget::loadModel(std::string filename)
 {
     model.loadFromFile(filename);
     recalculateOriginalPositions();
+    findWindingOrder();
     reset_camera = true;
 }
 
@@ -114,4 +113,19 @@ void AlmostGLWindowWidget::translateCameraZ(float z)
 {
     camera.translateN(z,fixed_center);
     update_camera = true;
+}
+
+void AlmostGLWindowWidget::findWindingOrder()
+{
+    // Find winding order
+    Vector3f v0 = model.triangles[0].vertex[0];
+    Vector3f v1 = model.triangles[0].vertex[1];
+    Vector3f v2 = model.triangles[0].vertex[2];
+    Vector3f calculated_normal = crossProduct(v1 - v0, v2 - v0).normalize();
+    Vector3f face_normal = model.triangles[0].face_normal;
+    if (dotProduct(calculated_normal, face_normal) > 0)
+        winding_order = AlmostGL::CCW;
+    else
+        winding_order = AlmostGL::CW;
+    emit windingOrderChanged();
 }

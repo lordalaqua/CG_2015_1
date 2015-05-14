@@ -3,8 +3,9 @@
 namespace AlmostGL
 {
     std::vector<Triangle4D> runPipeline(const Model3D& model, const Camera& camera,
-        float vp_left, float vp_right, float vp_top, float vp_bottom)
+        ViewPort vp, WindingOrder order)
     {
+
         // Compute Model/View Matrix
         Vector3f u = camera.u(), v = camera.v(), n = camera.n();
         Vector3f position = camera.position();
@@ -20,7 +21,6 @@ namespace AlmostGL
             enforces a symmetric field of view
             -Scale elements were substituted by equivalents of 1/(r-l) and 1/(t-b)
             obtained calculating tangent of field of view angle.
-            TODO: still some problems with near plane clipping
         */
 
         float znear = camera.Znear();
@@ -32,10 +32,13 @@ namespace AlmostGL
         Matrix4x4f projection_matrix = {
             { leftRight, 0, 0, 0 },
             { 0, topBottom, 0, 0 },
-            { 0, 0, (zfar + znear) / (zfar - znear), (2.f*zfar*znear) / (zfar - znear) },
+            { 0, 0, -(zfar + znear) / (zfar - znear), -(2.f*zfar*znear) / (zfar - znear) },
             { 0, 0, -1, 0 } };
 
-        // Transform model vertices to homogeneous coordinates (to keep last assigment working, will be changed later)
+        // Compute the projection/model/view matrix
+        Matrix4x4f PM = projection_matrix*view_matrix;
+
+        // Transform model vertices to homogeneous coordinates
         std::vector<Triangle4D> triangles;
         triangles.resize((int)model.triangles.size());
         for (int i = 0; i < model.triangles.size(); ++i)
@@ -46,9 +49,6 @@ namespace AlmostGL
             }
             triangles[i].clipped = false;
         }
-
-        // Compute the projection/model/view matrix
-        Matrix4x4f PM = projection_matrix*view_matrix;
 
         // Multiply every vertex by the matrix
         for (auto& triangle : triangles)
@@ -64,12 +64,12 @@ namespace AlmostGL
                 float w = abs(triangle.vertex[i][3]);
                 if (x > w || y > w || z > w)
                     triangle.clipped = true;
-            }
+            }            
         }
 
         // Remove clipped triangles
         triangles.erase(std::remove_if(triangles.begin(), triangles.end(),
-            [](Triangle4D& tri) { return !tri.clipped; }), triangles.end());
+            [](Triangle4D& tri) { return tri.clipped; }), triangles.end());
 
         // Perform the perspective division
         for (auto& triangle : triangles)
@@ -85,18 +85,42 @@ namespace AlmostGL
 
         // Compute the viewport matrix
         Matrix4x4f viewport_matrix = {
-            { (vp_right - vp_left) / 2.f, 0, 0, (vp_right + vp_left) / 2.f },
-            { 0, (vp_top - vp_bottom) / 2.f, 0, (vp_top + vp_bottom) / 2.f },
+            { (vp.right - vp.left) / 2.f, 0, 0, (vp.right + vp.left) / 2.f },
+            { 0, (vp.top - vp.bottom) / 2.f, 0, (vp.top + vp.bottom) / 2.f },
             { 0, 0, 1, 0 },
             { 0, 0, 0, 1 } };
 
+        // Perform translation and scaling of normalized device coordinates by
+        // the viewport.
         for (auto& triangle : triangles)
         {
             for (int i = 0; i < 3; ++i)
             {
                 triangle.vertex[i] = viewport_matrix*triangle.vertex[i];
             }
+            // Cull back facing polygons
+            int area = 0;
+            for (int i = 0; i < 3; ++i)
+            {
+                int j = (i + 1) % 3;
+                area += (triangle.vertex[i].x * triangle.vertex[j].y)
+                    - (triangle.vertex[j].x * triangle.vertex[i].y);
+            }
+            area = area / 2; // unnecessary but keeping for math correctness
+            if (order == CCW)
+            {
+                if (area < 0)
+                    triangle.clipped = true;
+            }
+            else // order == CW
+            {
+                if (area > 0)
+                    triangle.clipped = true;
+            }
         }
+        // Remove culled triangles
+        triangles.erase(std::remove_if(triangles.begin(), triangles.end(),
+            [](Triangle4D& tri) { return tri.clipped; }), triangles.end());
 
         return triangles;
     }

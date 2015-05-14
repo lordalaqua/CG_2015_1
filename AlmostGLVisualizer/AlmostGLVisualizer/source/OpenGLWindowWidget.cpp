@@ -21,7 +21,7 @@ OpenGLWindowWidget::OpenGLWindowWidget(QWidget *parent)
 , camera_z({ 0, 0, -1 })
 {
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer.start(100);
+    timer.start(50);
 }
 
 void OpenGLWindowWidget::initializeGL()

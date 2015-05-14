@@ -23,12 +23,12 @@ void AlmostGLVisualizer::setupAlmostGLWidgetConnections()
 //     connect(ui.radioButtonFlat, &QRadioButton::toggled, [&]{if (ui.radioButtonFlat->isChecked()) ui.openGLWidget->setLightingMode(GL_FLAT); });
 //     connect(ui.radioButtonSmooth, &QRadioButton::toggled, [&]{if (ui.radioButtonSmooth->isChecked()) ui.openGLWidget->setLightingMode(GL_SMOOTH); });
 // 
-//     // Vertex Order Radio buttons
-//     connect(ui.radioButtonCW, &QRadioButton::toggled, [&]{if (ui.radioButtonCW->isChecked()) ui.openGLWidget->setWindingOrder(GL_CW); });
-//     connect(ui.radioButtonCCW, &QRadioButton::toggled, [&]{if (ui.radioButtonCCW->isChecked()) ui.openGLWidget->setWindingOrder(GL_CCW); });
-//     connect(ui.openGLWidget, &OpenGLWindowWidget::windingOrderChanged, [&]
-//     {ui.openGLWidget->windingOrder() == GL_CW ? ui.radioButtonCW->setChecked(true) : ui.radioButtonCCW->setChecked(true); });
-// 
+    // Vertex Order Radio buttons
+    connect(ui.radioButtonCW, &QRadioButton::toggled, [&]{if (ui.radioButtonCW->isChecked()) ui.almostGLWidget->setWindingOrder(AlmostGL::CW); });
+    connect(ui.radioButtonCCW, &QRadioButton::toggled, [&]{if (ui.radioButtonCCW->isChecked()) ui.almostGLWidget->setWindingOrder(AlmostGL::CCW); });
+    connect(ui.almostGLWidget, &AlmostGLWindowWidget::windingOrderChanged, [&]
+    {ui.openGLWidget->windingOrder() == AlmostGL::CW ? ui.radioButtonCW->setChecked(true) : ui.radioButtonCCW->setChecked(true); });
+
 //     // Polygon mode radio buttons
     connect(ui.radioButtonFill, &QRadioButton::toggled, [&]{ui.almostGLWidget->switchPolygonMode(GL_FILL); });
     connect(ui.radioButtonLine, &QRadioButton::toggled, [&]{ui.almostGLWidget->switchPolygonMode(GL_LINE); });

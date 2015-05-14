@@ -29,16 +29,32 @@ namespace AlmostGL
         bool clipped;
     };
 
+    struct ViewPort
+    {
+        ViewPort(float t, float r, float b, float l)
+            : top(t), bottom(b), left(l), right(r) {}
+        ViewPort() : ViewPort(0, 0, 0, 0) {}
+        float top;
+        float bottom;
+        float left;
+        float right;
+    };
+
+    enum WindingOrder
+    {
+        CW,
+        CCW
+    };
+
     /* Main Pipeline function
      Transforms vertices in the 3D space into the appropriate 2D pixels in
      the view frustum and viewport provided.
     - Model contains vertices (triangles) to be drawn.
     - Camera contains camera position and orientation for frustum calculation.
     - VP(viewport) top,bottom,left,right parameters define viewport.
-    TODO: wrap viewport argument in proper structure
     */
     std::vector<Triangle4D> runPipeline(const Model3D& model, const Camera& camera,
-        float vp_left, float vp_right, float vp_top, float vp_bottom);
+        ViewPort vp, WindingOrder order);
 
     float degreeToRadians(float angle);
 }
