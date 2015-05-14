@@ -28,6 +28,7 @@ public:
 
     float fieldOfViewX() { return camera.Hfov(); }
     float fieldOfViewY() { return camera.Vfov(); }
+    AlmostGL::WindingOrder windingOrder() { return winding_order; }
 
 signals:
     void windingOrderChanged();
@@ -40,7 +41,7 @@ signals:
     void setColorB(float B) { color.z = B; }
 
     // Lighting, vertex order and polygon mode(polygons,wireframe,etc)controls
-    void switchPolygonMode(GLenum mode) { polygon_mode = mode; }
+    void switchPolygonMode(AlmostGL::PolygonMode mode) { polygon_mode = mode; }
     void setWindingOrder(AlmostGL::WindingOrder w) { winding_order = w; update_camera = true; }
 
     // Model load interface
@@ -83,7 +84,7 @@ private: //fields
 
     // Color and lighting variables
     Vector3f color;
-    GLenum polygon_mode;
+    AlmostGL::PolygonMode polygon_mode;
     AlmostGL::WindingOrder winding_order;
 
     // Flags for keeping track of what needs updating

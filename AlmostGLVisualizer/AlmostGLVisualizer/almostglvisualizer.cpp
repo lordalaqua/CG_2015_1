@@ -27,12 +27,12 @@ void AlmostGLVisualizer::setupAlmostGLWidgetConnections()
     connect(ui.radioButtonCW, &QRadioButton::toggled, [&]{if (ui.radioButtonCW->isChecked()) ui.almostGLWidget->setWindingOrder(AlmostGL::CW); });
     connect(ui.radioButtonCCW, &QRadioButton::toggled, [&]{if (ui.radioButtonCCW->isChecked()) ui.almostGLWidget->setWindingOrder(AlmostGL::CCW); });
     connect(ui.almostGLWidget, &AlmostGLWindowWidget::windingOrderChanged, [&]
-    {ui.openGLWidget->windingOrder() == AlmostGL::CW ? ui.radioButtonCW->setChecked(true) : ui.radioButtonCCW->setChecked(true); });
+    {ui.almostGLWidget->windingOrder() == AlmostGL::CW ? ui.radioButtonCW->setChecked(true) : ui.radioButtonCCW->setChecked(true); });
 
 //     // Polygon mode radio buttons
-    connect(ui.radioButtonFill, &QRadioButton::toggled, [&]{ui.almostGLWidget->switchPolygonMode(GL_FILL); });
-    connect(ui.radioButtonLine, &QRadioButton::toggled, [&]{ui.almostGLWidget->switchPolygonMode(GL_LINE); });
-    connect(ui.radioButtonPoint, &QRadioButton::toggled, [&]{ui.almostGLWidget->switchPolygonMode(GL_POINT); });
+    connect(ui.radioButtonFill, &QRadioButton::toggled, [&]{ui.almostGLWidget->switchPolygonMode(AlmostGL::FILL); });
+    connect(ui.radioButtonLine, &QRadioButton::toggled, [&]{ui.almostGLWidget->switchPolygonMode(AlmostGL::WIREFRAME); });
+    connect(ui.radioButtonPoint, &QRadioButton::toggled, [&]{ui.almostGLWidget->switchPolygonMode(AlmostGL::POINTS); });
 // 
 //     // Load model file dialog button
     connect(ui.buttonLoadFile, &QPushButton::clicked, [&]{

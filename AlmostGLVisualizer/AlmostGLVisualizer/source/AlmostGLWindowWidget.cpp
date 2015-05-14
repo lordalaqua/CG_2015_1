@@ -1,9 +1,8 @@
 #include "AlmostGLWindowWidget.h"
-
 AlmostGLWindowWidget::AlmostGLWindowWidget(QWidget *parent) : QOpenGLWidget(parent)
 , color({ 1.0, 0.0, 0.0 })
-, polygon_mode(GL_FILL)
-, winding_order(AlmostGL::CCW)
+, polygon_mode(AlmostGL::FILL)
+, winding_order(AlmostGL::CW)
 , update_camera(false)
 , reset_camera(false)
 , viewport()
@@ -40,18 +39,10 @@ void AlmostGLWindowWidget::paintGL()
         updateCamera();
         update_camera = false;
     }
-    glPolygonMode(GL_FRONT_AND_BACK, polygon_mode);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glBegin(GL_TRIANGLES);
-    glColor3f(color.x, color.y, color.z);
-    for (const auto& triangle : triangles)
-    {
-        for (int i = 0; i < 3; ++i)
-        {
-            glVertex2i(triangle.vertex[i][0], triangle.vertex[i][1]);
-        }
-    }
-    glEnd();
+    glRasterPos2i(0, 0);
+    AlmostGL::FrameBuffer buffer(this->width(),this->height());
+    runRasterization(triangles, buffer, polygon_mode);
+    glDrawPixels(this->width(), this->height(), GL_RGB, GL_FLOAT, buffer.data.data());
     glFlush();
 }
 
@@ -64,7 +55,7 @@ void AlmostGLWindowWidget::updateCamera()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();    
     gluOrtho2D(viewport.left,viewport.right,viewport.bottom,viewport.top);
-    triangles = AlmostGL::runPipeline(model, camera, viewport, winding_order);
+    triangles = AlmostGL::runVertexPipeline(model, camera, viewport, winding_order);
     glFlush();
 }
 
@@ -84,7 +75,7 @@ void AlmostGLWindowWidget::recalculateOriginalPositions()
         model.min.z + (model.max.z - model.min.z) / 2 };
     float max = std::max(model.max.x - model.min.x, model.max.y - model.min.y);
     camera.setResetLookAt(object_center);
-    camera.setResetPosition(object_center + Vector3f{ 0, 0, 1.5f*(max) });
+    camera.setResetPosition(object_center + Vector3f{ 0, 0, 1.0f*(max) });
 }
 
 

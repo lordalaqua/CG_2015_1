@@ -99,7 +99,7 @@ void OpenGLWindowWidget::recalculateOriginalPositions()
         model.min.y + (model.max.y - model.min.y) / 2,
         model.min.z + (model.max.z - model.min.z) / 2 };
     float max = std::max(model.max.x - model.min.x, model.max.y - model.min.y);
-    camera_original_position = object_center + Vector3f{ 0, 0, 1.5f*(max) };
+    camera_original_position = object_center + Vector3f{ 0, 0, 1.0f*(max) };
 }
 
 void OpenGLWindowWidget::findWindingOrder()
@@ -137,7 +137,7 @@ void OpenGLWindowWidget::updateCamera()
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(field_of_view_y, (this->width()*field_of_view_x)/(this->height()*field_of_view_y), zNear, zFar);
+    gluPerspective(field_of_view_y, (field_of_view_x)/(field_of_view_y), zNear, zFar);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(camera_position.x, camera_position.y, camera_position.z, camera_look.x, camera_look.y, camera_look.z, camera_y.x, camera_y.y, camera_y.z);

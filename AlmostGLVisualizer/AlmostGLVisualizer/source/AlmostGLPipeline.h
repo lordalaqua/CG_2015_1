@@ -46,6 +46,36 @@ namespace AlmostGL
         CCW
     };
 
+    enum Color
+    {
+        RED = 0,
+        GREEN = 1,
+        BLUE = 2
+    };
+
+    enum PolygonMode
+    {
+        FILL,
+        WIREFRAME,
+        POINTS
+    };
+
+    struct FrameBuffer
+    {
+        FrameBuffer() {}
+        FrameBuffer(int width, int height, float v = 0.f) : data(width*height*3, v) {}
+        float& operator()(int x, int y, Color color) 
+        {
+            if (0 <= x && x < width && 0 <= y && y < height)
+                return data[(y*width + x) * 3 + (int)color];
+            else
+                return data[0];
+        }
+        std::vector<float> data;
+        int width;
+        int height;
+    };
+
     /* Main Pipeline function
      Transforms vertices in the 3D space into the appropriate 2D pixels in
      the view frustum and viewport provided.
@@ -53,8 +83,17 @@ namespace AlmostGL
     - Camera contains camera position and orientation for frustum calculation.
     - VP(viewport) top,bottom,left,right parameters define viewport.
     */
-    std::vector<Triangle4D> runPipeline(const Model3D& model, const Camera& camera,
-        ViewPort vp, WindingOrder order);
+    std::vector<Triangle4D> runVertexPipeline(const Model3D& model, 
+        const Camera& camera, ViewPort vp, WindingOrder order);
+    
+    void runRasterization(const std::vector<Triangle4D>& triangles, 
+        FrameBuffer& buffer, PolygonMode mode, Vector3f ambient = { 1.0, 0, 0 },
+        Vector3f diffuse = { 0, 0, 0 }, Vector3f specular = { 0, 0, 0 });
+
+    void bresenham(Vector4f start, Vector4f end, FrameBuffer& buffer);
+    void fillTriangle(Triangle4D triangle, FrameBuffer& buffer);
+    void fillFlatBottomTriangle(Triangle4D t, FrameBuffer& buffer);
+    void fillFlatTopTriangle(Triangle4D t, FrameBuffer& buffer);
 
     float degreeToRadians(float angle);
 }

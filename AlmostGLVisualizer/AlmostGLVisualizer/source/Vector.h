@@ -44,7 +44,9 @@ private:
     T data_[SIZE];
 };
 
+typedef Vector<2, float> Vector2f;
 typedef Vector<3,float> Vector3f;
+typedef Vector<4, float> Vector4f;
 
 #include "Vector.inl"
 
