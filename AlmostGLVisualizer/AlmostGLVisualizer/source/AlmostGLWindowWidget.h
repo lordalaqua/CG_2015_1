@@ -36,9 +36,9 @@ signals:
     void FOVYchanged();
  public slots:
     // Color Control
-    void setColorR(float R) { color.x = R; }
-    void setColorG(float G) { color.y = G; }
-    void setColorB(float B) { color.z = B; }
+    void setColorR(float R) { material.ambient[0] = R; update_camera = true; }
+    void setColorG(float G) { material.ambient[1] = G; update_camera = true; }
+    void setColorB(float B) { material.ambient[2] = B; update_camera = true; }
 
     // Lighting, vertex order and polygon mode(polygons,wireframe,etc)controls
     void switchPolygonMode(AlmostGL::PolygonMode mode) { polygon_mode = mode; }
@@ -74,6 +74,7 @@ private:
 private: //fields
     // 3D model and object position (without any transform)
     Model3D model;
+    Material material;
     Vector3f object_center;
     std::vector<AlmostGL::Triangle4D> triangles;
 
@@ -83,7 +84,7 @@ private: //fields
     AlmostGL::ViewPort viewport;
 
     // Color and lighting variables
-    Vector3f color;
+    AlmostGL::LightParameters light;
     AlmostGL::PolygonMode polygon_mode;
     AlmostGL::WindingOrder winding_order;
 

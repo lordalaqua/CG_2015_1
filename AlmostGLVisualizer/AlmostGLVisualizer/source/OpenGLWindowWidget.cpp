@@ -3,7 +3,7 @@
 OpenGLWindowWidget::OpenGLWindowWidget(QWidget *parent) 
 : QOpenGLWidget(parent)
 , color({ 1.0, 0.0, 0.0 })
-, polygon_mode(GL_FILL)
+, polygon_mode(GL_POINT)
 , winding_order (GL_CCW)
 , update_camera(false)
 , update_order(false)
@@ -21,7 +21,7 @@ OpenGLWindowWidget::OpenGLWindowWidget(QWidget *parent)
 , camera_z({ 0, 0, -1 })
 {
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer.start(50);
+    timer.start(300);
 }
 
 void OpenGLWindowWidget::initializeGL()
@@ -151,22 +151,24 @@ void OpenGLWindowWidget::updateLighting()
         glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
         glEnable(GL_COLOR_MATERIAL);
         glEnable(GL_LIGHTING);
+        
         glShadeModel(lighting_mode);
-        GLfloat light_ambient[] = { 0.5, 0.5, 0.5};
+        GLfloat light_ambient[] = { 1.f, 0.f, 1.f};
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
         GLfloat light_diffuse[] = { 1.0, 1.0, 1.0 };
         GLfloat light_specular[] = { 1.0, 1.0, 1.0 };
         GLfloat light_position1[] = { camera_position.x, camera_position.y, camera_position.z};
         GLfloat light_direction1[] = { camera_z.x, camera_z.y, camera_z.z };
         GLfloat light_exponent[] = { 128 };
         GLfloat light_cutoff[] = { 180 };
-        glEnable(GL_LIGHT0);
-        glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-        glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-        glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light_direction1);
-        glLightfv(GL_LIGHT0, GL_SPOT_EXPONENT, light_exponent);
-        glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, light_cutoff);
-        glLightfv(GL_LIGHT0, GL_POSITION, light_position1);
+        //glEnable(GL_LIGHT0);
+        //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+        //glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+        //glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+        //glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light_direction1);
+        //glLightfv(GL_LIGHT0, GL_SPOT_EXPONENT, light_exponent);
+        //glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, light_cutoff);
+        //glLightfv(GL_LIGHT0, GL_POSITION, light_position1);
     }
     else
     {

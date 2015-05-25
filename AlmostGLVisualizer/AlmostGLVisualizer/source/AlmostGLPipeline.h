@@ -6,6 +6,7 @@
 #include "Matrix.h"
 #include "Model3D.h"
 #include "Camera.h"
+#include "Material.h"
 
 /*
     AlmostGL namespace
@@ -23,9 +24,16 @@ namespace AlmostGL
     /*
         4-Dimensional triangle for calculations with homogeneous coordinates
     */
+    struct Vertex
+    {
+        Vector4f pos;
+        Vector3f color;
+        float interpolation_factor;
+    };
+
     struct Triangle4D
     {
-        Vector<4, float> vertex[3];
+        Vertex v[3];
         bool clipped;
     };
 
@@ -60,10 +68,41 @@ namespace AlmostGL
         POINTS
     };
 
-    struct FrameBuffer
+    enum LightingMode
     {
+        NONE,
+        FLAT,
+        SMOOTH
+    };
+
+    struct LightSource
+    {
+        Vector3f position;
+        Vector3f color;
+    };
+
+    struct LightParameters
+    {
+        LightParameters() 
+        : mode(SMOOTH), 
+        ambient_color({1.f, 1.f, 1.f}), 
+        constant_attenuation(1.f), 
+        linear_attenuation(0.f),
+        quadratic_attenuation(0.f) {}
+
+        LightingMode mode;
+        Vector3f ambient_color;
+        float constant_attenuation;
+        float linear_attenuation;
+        float quadratic_attenuation;
+        std::vector<LightSource> sources;
+    };
+
+    class FrameBuffer
+    {
+    public:
         FrameBuffer() {}
-        FrameBuffer(int width, int height, float v = 0.f) : data(width*height*3, v) {}
+        FrameBuffer(int width, int height, float v = 0.f) : data(width*height*3, v), width(width), height(height) {}
         float& operator()(int x, int y, Color color) 
         {
             if (0 <= x && x < width && 0 <= y && y < height)
@@ -84,17 +123,20 @@ namespace AlmostGL
     - VP(viewport) top,bottom,left,right parameters define viewport.
     */
     std::vector<Triangle4D> runVertexPipeline(const Model3D& model, 
-        const Camera& camera, ViewPort vp, WindingOrder order);
+        const Camera& camera, ViewPort vp, WindingOrder order, 
+        Material material, const LightParameters& light);
+
+    Vector3f calculateIllumination(const Vector3f& vertex, 
+        const Vector3f& normal, const Material& material, const Camera& camera, 
+        const LightParameters& light);
     
     void runRasterization(const std::vector<Triangle4D>& triangles, 
-        FrameBuffer& buffer, PolygonMode mode, Vector3f ambient = { 1.0, 0, 0 },
-        Vector3f diffuse = { 0, 0, 0 }, Vector3f specular = { 0, 0, 0 });
-
-    void bresenham(Vector4f start, Vector4f end, FrameBuffer& buffer);
-    void fillTriangle(Triangle4D triangle, FrameBuffer& buffer);
-    void fillFlatBottomTriangle(Triangle4D t, FrameBuffer& buffer);
-    void fillFlatTopTriangle(Triangle4D t, FrameBuffer& buffer);
-
+        FrameBuffer& buffer, PolygonMode mode);
+    void rasterTriangle(Triangle4D& triangle, FrameBuffer& buffer, 
+        PolygonMode mode);
+    std::vector<Vertex> bresenham(const Vertex& start, const Vertex& end, FrameBuffer& buffer, bool output_vertices = false);
+    inline Vertex createInterpolated(const Vertex& start, const Vertex& end, int x, int y);
+    inline void writeToBuffer(Vertex& v, FrameBuffer& buffer);
     float degreeToRadians(float angle);
 }
 

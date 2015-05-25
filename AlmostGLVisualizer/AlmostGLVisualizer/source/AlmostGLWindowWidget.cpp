@@ -1,7 +1,8 @@
 #include "AlmostGLWindowWidget.h"
 AlmostGLWindowWidget::AlmostGLWindowWidget(QWidget *parent) : QOpenGLWidget(parent)
-, color({ 1.0, 0.0, 0.0 })
-, polygon_mode(AlmostGL::FILL)
+, light()
+, material({ 1.f, 0.f, 0.f }, { 1.f, 0.f, 0.f }, {1.f,1.f,1.f},2)
+, polygon_mode(AlmostGL::POINTS)
 , winding_order(AlmostGL::CW)
 , update_camera(false)
 , reset_camera(false)
@@ -9,7 +10,7 @@ AlmostGLWindowWidget::AlmostGLWindowWidget(QWidget *parent) : QOpenGLWidget(pare
 , fixed_center(false)
 {
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer.start(50);
+    timer.start(300);
 }
 
 void AlmostGLWindowWidget::initializeGL()
@@ -53,9 +54,9 @@ void AlmostGLWindowWidget::updateCamera()
     viewport.left = 0.0; viewport.right = this->width();
     viewport.bottom = 0.0; viewport.top = this->height();
     glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();    
+    glLoadIdentity();
     gluOrtho2D(viewport.left,viewport.right,viewport.bottom,viewport.top);
-    triangles = AlmostGL::runVertexPipeline(model, camera, viewport, winding_order);
+    triangles = AlmostGL::runVertexPipeline(model, camera, viewport, winding_order, material, light);
     glFlush();
 }
 
