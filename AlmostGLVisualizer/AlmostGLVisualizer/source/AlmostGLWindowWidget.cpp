@@ -4,9 +4,9 @@ AlmostGLWindowWidget::AlmostGLWindowWidget(QWidget *parent) : QOpenGLWidget(pare
 , reset_camera(false)
 , fixed_center(false)
 {
-    GL.material = Material({ 1.f, 0.f, 0.f }, { 1.f, 0.f, 0.f }, { 1.f, 1.f, 1.f }, 2);
-    GL.mode = AlmostGL::POINTS;
-    GL.order = AlmostGL::CW;
+    model.material = Material({ 1.f, 0.f, 0.f }, { 1.f, 0.f, 0.f }, { 1.f, 1.f, 1.f }, 2);
+    GL.polygon_mode = AlmostGL::POINTS;
+    GL.winding_order = AlmostGL::CW;
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.start(300);
 }
@@ -39,7 +39,7 @@ void AlmostGLWindowWidget::paintGL()
         update_camera = false;
     }
     glRasterPos2i(0, 0);
-    GL.buffer.resize(this->width(),this->height());
+    GL.buffer.reset(this->width(),this->height());
     GL.runRasterization();
     glDrawPixels(this->width(), this->height(), GL_RGB, GL_FLOAT, GL.buffer.data.data());
     glFlush();
@@ -49,11 +49,11 @@ void AlmostGLWindowWidget::paintGL()
 
 void AlmostGLWindowWidget::updateCamera()
 {
-    GL.vp.left = 0.0; GL.vp.right = this->width();
-    GL.vp.bottom = 0.0; GL.vp.top = this->height();
+    GL.viewport.left = 0.0; GL.viewport.right = this->width();
+    GL.viewport.bottom = 0.0; GL.viewport.top = this->height();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(GL.vp.left, GL.vp.right, GL.vp.bottom, GL.vp.top);
+    gluOrtho2D(GL.viewport.left, GL.viewport.right, GL.viewport.bottom, GL.viewport.top);
     GL.runVertexPipeline(model);
     glFlush();
 }
@@ -114,8 +114,8 @@ void AlmostGLWindowWidget::findWindingOrder()
     Vector3f calculated_normal = crossProduct(v1 - v0, v2 - v0).normalize();
     Vector3f face_normal = model.triangles[0].face_normal;
     if (dotProduct(calculated_normal, face_normal) > 0)
-        GL.order = AlmostGL::CCW;
+        GL.winding_order = AlmostGL::CCW;
     else
-        GL.order = AlmostGL::CW;
+        GL.winding_order = AlmostGL::CW;
     emit windingOrderChanged();
 }

@@ -104,9 +104,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="source\AlmostGLPipeline.cpp" />
+    <ClCompile Include="source\Pipeline.cpp" />
     <ClCompile Include="source\AlmostGLWindowWidget.cpp" />
     <ClCompile Include="source\Camera.cpp" />
+    <ClCompile Include="source\FrameBuffer.cpp" />
     <ClCompile Include="source\Material.cpp" />
     <ClCompile Include="source\Matrix.inl" />
     <ClCompile Include="source\Model3D.cpp" />
@@ -137,8 +138,10 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\AlmostGLPipeline.h" />
+    <ClInclude Include="source\AlmostGLParameters.h" />
     <ClInclude Include="source\LightParameters.h" />
+    <ClInclude Include="source\Pipeline.h" />
+    <ClInclude Include="source\FrameBuffer.h" />
     <ClInclude Include="source\Viewport.h" />
     <CustomBuild Include="source\AlmostGLWindowWidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

@@ -33,6 +33,9 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Header Files\AlmostGL">
+      <UniqueIdentifier>{99792c45-d72a-4fd4-81d3-0b88669227ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -71,9 +74,6 @@
     <ClCompile Include="source\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\AlmostGLPipeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\AlmostGLWindowWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -82,6 +82,12 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_AlmostGLWindowWidget.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="source\FrameBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pipeline.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -120,17 +126,23 @@
     <ClInclude Include="source\Vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\AlmostGLPipeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\Viewport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\Pipeline.h">
+      <Filter>Header Files\AlmostGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AlmostGLParameters.h">
+      <Filter>Header Files\AlmostGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\FrameBuffer.h">
+      <Filter>Header Files\AlmostGL</Filter>
+    </ClInclude>
     <ClInclude Include="source\LightParameters.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\AlmostGL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

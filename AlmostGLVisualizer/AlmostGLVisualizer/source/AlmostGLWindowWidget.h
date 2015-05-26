@@ -7,7 +7,8 @@
 #include <GL/GLU.h>
 #include "Model3D.h"
 #include "Camera.h"
-#include "AlmostGLPipeline.h"
+#include "Pipeline.h"
+#include "AlmostGLParameters.h"
 
 /*
     AlmostGLWindowWidget
@@ -28,7 +29,7 @@ public:
 
     float fieldOfViewX() { return GL.camera.Hfov(); }
     float fieldOfViewY() { return GL.camera.Vfov(); }
-    AlmostGL::WindingOrder windingOrder() { return GL.order; }
+    AlmostGL::WindingOrder windingOrder() { return GL.winding_order; }
 
 signals:
     void windingOrderChanged();
@@ -36,13 +37,13 @@ signals:
     void FOVYchanged();
  public slots:
     // Color Control
-     void setColorR(float R) { GL.material.ambient[0] = R; update_camera = true; }
-     void setColorG(float G) { GL.material.ambient[1] = G; update_camera = true; }
-     void setColorB(float B) { GL.material.ambient[2] = B; update_camera = true; }
+     void setColorR(float R) { model.material.ambient[0] = R; update_camera = true; }
+     void setColorG(float G) { model.material.ambient[1] = G; update_camera = true; }
+     void setColorB(float B) { model.material.ambient[2] = B; update_camera = true; }
 
     // Lighting, vertex order and polygon mode(polygons,wireframe,etc)controls
-    void switchPolygonMode(AlmostGL::PolygonMode mode) { GL.mode = mode; }
-    void setWindingOrder(AlmostGL::WindingOrder w) { GL.order = w; update_camera = true; }
+    void switchPolygonMode(AlmostGL::PolygonMode mode) { GL.polygon_mode = mode; }
+    void setWindingOrder(AlmostGL::WindingOrder w) { GL.winding_order = w; update_camera = true; }
 
     // Model load interface
     void loadModel(std::string filename);
@@ -75,7 +76,7 @@ private: //fields
     // 3D model and object position (without any transform)
     Model3D model;
     Vector3f object_center;
-    AlmostGL GL;
+    AlmostGL::Pipeline GL;
 
     // Flags for keeping track of what needs updating
     bool fixed_center;
