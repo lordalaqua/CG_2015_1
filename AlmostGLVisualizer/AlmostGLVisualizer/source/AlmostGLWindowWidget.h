@@ -26,9 +26,9 @@ public:
     void paintGL();;
 
 
-    float fieldOfViewX() { return camera.Hfov(); }
-    float fieldOfViewY() { return camera.Vfov(); }
-    AlmostGL::WindingOrder windingOrder() { return winding_order; }
+    float fieldOfViewX() { return GL.camera.Hfov(); }
+    float fieldOfViewY() { return GL.camera.Vfov(); }
+    AlmostGL::WindingOrder windingOrder() { return GL.order; }
 
 signals:
     void windingOrderChanged();
@@ -36,13 +36,13 @@ signals:
     void FOVYchanged();
  public slots:
     // Color Control
-    void setColorR(float R) { material.ambient[0] = R; update_camera = true; }
-    void setColorG(float G) { material.ambient[1] = G; update_camera = true; }
-    void setColorB(float B) { material.ambient[2] = B; update_camera = true; }
+     void setColorR(float R) { GL.material.ambient[0] = R; update_camera = true; }
+     void setColorG(float G) { GL.material.ambient[1] = G; update_camera = true; }
+     void setColorB(float B) { GL.material.ambient[2] = B; update_camera = true; }
 
     // Lighting, vertex order and polygon mode(polygons,wireframe,etc)controls
-    void switchPolygonMode(AlmostGL::PolygonMode mode) { polygon_mode = mode; }
-    void setWindingOrder(AlmostGL::WindingOrder w) { winding_order = w; update_camera = true; }
+    void switchPolygonMode(AlmostGL::PolygonMode mode) { GL.mode = mode; }
+    void setWindingOrder(AlmostGL::WindingOrder w) { GL.order = w; update_camera = true; }
 
     // Model load interface
     void loadModel(std::string filename);
@@ -51,10 +51,10 @@ signals:
     void setCameraReset() { reset_camera = true; }
 
     // Frustum control
-    void setZNear(double n) { camera.Znear(n); update_camera = true; }
-    void setZFar(double f) { camera.Zfar(f); update_camera = true; }
-    void setFOVX(double fov) { camera.Hfov(fov); update_camera = true; }
-    void setFOVY(double fov) { camera.Vfov(fov); update_camera = true; }
+    void setZNear(double n) { GL.camera.Znear(n); update_camera = true; }
+    void setZFar(double f) { GL.camera.Zfar(f); update_camera = true; }
+    void setFOVX(double fov) { GL.camera.Hfov(fov); update_camera = true; }
+    void setFOVY(double fov) { GL.camera.Vfov(fov); update_camera = true; }
 
     // Camera Transforms
     // Camera Transforms
@@ -62,9 +62,9 @@ signals:
     void translateCameraX(float x);
     void translateCameraY(float y);
     void translateCameraZ(float z);
-    void rotateCameraX(int angle) { camera.rotateU(angle); update_camera = true; }
-    void rotateCameraY(int angle) { camera.rotateV(angle); update_camera = true; }
-    void rotateCameraZ(int angle) { camera.rotateN(angle); update_camera = true; }
+    void rotateCameraX(int angle) { GL.camera.rotateU(angle); update_camera = true; }
+    void rotateCameraY(int angle) { GL.camera.rotateV(angle); update_camera = true; }
+    void rotateCameraZ(int angle) { GL.camera.rotateN(angle); update_camera = true; }
 private:
     void updateCamera();
     void resetCamera();
@@ -74,19 +74,8 @@ private:
 private: //fields
     // 3D model and object position (without any transform)
     Model3D model;
-    Material material;
     Vector3f object_center;
-    std::vector<AlmostGL::Triangle4D> triangles;
-
-    // Virtual camera and original position based on model load.
-    Camera camera;
-    Vector3f camera_original_position;
-    AlmostGL::ViewPort viewport;
-
-    // Color and lighting variables
-    AlmostGL::LightParameters light;
-    AlmostGL::PolygonMode polygon_mode;
-    AlmostGL::WindingOrder winding_order;
+    AlmostGL GL;
 
     // Flags for keeping track of what needs updating
     bool fixed_center;

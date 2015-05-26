@@ -1,14 +1,12 @@
 #include "AlmostGLWindowWidget.h"
 AlmostGLWindowWidget::AlmostGLWindowWidget(QWidget *parent) : QOpenGLWidget(parent)
-, light()
-, material({ 1.f, 0.f, 0.f }, { 1.f, 0.f, 0.f }, {1.f,1.f,1.f},2)
-, polygon_mode(AlmostGL::POINTS)
-, winding_order(AlmostGL::CW)
 , update_camera(false)
 , reset_camera(false)
-, viewport()
 , fixed_center(false)
 {
+    GL.material = Material({ 1.f, 0.f, 0.f }, { 1.f, 0.f, 0.f }, { 1.f, 1.f, 1.f }, 2);
+    GL.mode = AlmostGL::POINTS;
+    GL.order = AlmostGL::CW;
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.start(300);
 }
@@ -41,9 +39,9 @@ void AlmostGLWindowWidget::paintGL()
         update_camera = false;
     }
     glRasterPos2i(0, 0);
-    AlmostGL::FrameBuffer buffer(this->width(),this->height());
-    runRasterization(triangles, buffer, polygon_mode);
-    glDrawPixels(this->width(), this->height(), GL_RGB, GL_FLOAT, buffer.data.data());
+    GL.buffer.resize(this->width(),this->height());
+    GL.runRasterization();
+    glDrawPixels(this->width(), this->height(), GL_RGB, GL_FLOAT, GL.buffer.data.data());
     glFlush();
 }
 
@@ -51,18 +49,18 @@ void AlmostGLWindowWidget::paintGL()
 
 void AlmostGLWindowWidget::updateCamera()
 {
-    viewport.left = 0.0; viewport.right = this->width();
-    viewport.bottom = 0.0; viewport.top = this->height();
+    GL.vp.left = 0.0; GL.vp.right = this->width();
+    GL.vp.bottom = 0.0; GL.vp.top = this->height();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(viewport.left,viewport.right,viewport.bottom,viewport.top);
-    triangles = AlmostGL::runVertexPipeline(model, camera, viewport, winding_order, material, light);
+    gluOrtho2D(GL.vp.left, GL.vp.right, GL.vp.bottom, GL.vp.top);
+    GL.runVertexPipeline(model);
     glFlush();
 }
 
 void AlmostGLWindowWidget::resetCamera()
 {
-    camera.reset();
+    GL.camera.reset();
     emit FOVXchanged();
     emit FOVYchanged();
     updateCamera();
@@ -75,8 +73,8 @@ void AlmostGLWindowWidget::recalculateOriginalPositions()
         model.min.y + (model.max.y - model.min.y) / 2,
         model.min.z + (model.max.z - model.min.z) / 2 };
     float max = std::max(model.max.x - model.min.x, model.max.y - model.min.y);
-    camera.setResetLookAt(object_center);
-    camera.setResetPosition(object_center + Vector3f{ 0, 0, 1.0f*(max) });
+    GL.camera.setResetLookAt(object_center);
+    GL.camera.setResetPosition(object_center + Vector3f{ 0, 0, 1.0f*(max) });
 }
 
 
@@ -91,19 +89,19 @@ void AlmostGLWindowWidget::loadModel(std::string filename)
 
 void AlmostGLWindowWidget::translateCameraX(float x)
 {
-    camera.translateU(x,fixed_center);
+    GL.camera.translateU(x,fixed_center);
     update_camera = true;
 }
 
 void AlmostGLWindowWidget::translateCameraY(float y)
 {
-    camera.translateV(y,fixed_center);
+    GL.camera.translateV(y, fixed_center);
     update_camera = true;
 }
 
 void AlmostGLWindowWidget::translateCameraZ(float z)
 {
-    camera.translateN(z,fixed_center);
+    GL.camera.translateN(z, fixed_center);
     update_camera = true;
 }
 
@@ -116,8 +114,8 @@ void AlmostGLWindowWidget::findWindingOrder()
     Vector3f calculated_normal = crossProduct(v1 - v0, v2 - v0).normalize();
     Vector3f face_normal = model.triangles[0].face_normal;
     if (dotProduct(calculated_normal, face_normal) > 0)
-        winding_order = AlmostGL::CCW;
+        GL.order = AlmostGL::CCW;
     else
-        winding_order = AlmostGL::CW;
+        GL.order = AlmostGL::CW;
     emit windingOrderChanged();
 }

@@ -1,12 +1,15 @@
 #ifndef AlmostGLPipeline_h__
 #define AlmostGLPipeline_h__
+
 #include <cmath>
 #include <algorithm>
+
 #include "Vector.h"
 #include "Matrix.h"
 #include "Model3D.h"
 #include "Camera.h"
 #include "Material.h"
+#include "Viewport.h"
 
 /*
     AlmostGL namespace
@@ -19,11 +22,9 @@
     3D model received as a parameter, and returns the transformed vertices
     in the 2D pixel space.
 */
-namespace AlmostGL
+class AlmostGL
 {
-    /*
-        4-Dimensional triangle for calculations with homogeneous coordinates
-    */
+public:
     struct Vertex
     {
         Vector4f pos;
@@ -31,49 +32,19 @@ namespace AlmostGL
         float interpolation_factor;
     };
 
-    struct Triangle4D
+    struct Triangle
     {
         Vertex v[3];
-        bool clipped;
+        bool removed;
     };
 
-    struct ViewPort
-    {
-        ViewPort(float t, float r, float b, float l)
-            : top(t), bottom(b), left(l), right(r) {}
-        ViewPort() : ViewPort(0, 0, 0, 0) {}
-        float top;
-        float bottom;
-        float left;
-        float right;
-    };
+    enum WindingOrder { CW, CCW };
 
-    enum WindingOrder
-    {
-        CW,
-        CCW
-    };
+    enum Color { RED = 0, GREEN = 1, BLUE = 2 };
 
-    enum Color
-    {
-        RED = 0,
-        GREEN = 1,
-        BLUE = 2
-    };
+    enum PolygonMode { FILL, WIREFRAME, POINTS };
 
-    enum PolygonMode
-    {
-        FILL,
-        WIREFRAME,
-        POINTS
-    };
-
-    enum LightingMode
-    {
-        NONE,
-        FLAT,
-        SMOOTH
-    };
+    enum LightingMode { NONE, FLAT, SMOOTH };
 
     struct LightSource
     {
@@ -83,10 +54,10 @@ namespace AlmostGL
 
     struct LightParameters
     {
-        LightParameters() 
-        : mode(SMOOTH), 
-        ambient_color({1.f, 1.f, 1.f}), 
-        constant_attenuation(1.f), 
+        LightParameters()
+        : mode(NONE),
+        ambient_color({ 1.f, 1.f, 1.f }),
+        constant_attenuation(1.f),
         linear_attenuation(0.f),
         quadratic_attenuation(0.f) {}
 
@@ -102,8 +73,9 @@ namespace AlmostGL
     {
     public:
         FrameBuffer() {}
-        FrameBuffer(int width, int height, float v = 0.f) : data(width*height*3, v), width(width), height(height) {}
-        float& operator()(int x, int y, Color color) 
+        FrameBuffer(int w, int h, float v = 0.f) : data(w*h * 3, v), width(w), height(h) {}
+        void resize(int w, int h) { data.clear(); data.resize(w*h * 3); width = w; height = h; }
+        float& operator()(int x, int y, Color color)
         {
             if (0 <= x && x < width && 0 <= y && y < height)
                 return data[(y*width + x) * 3 + (int)color];
@@ -122,22 +94,28 @@ namespace AlmostGL
     - Camera contains camera position and orientation for frustum calculation.
     - VP(viewport) top,bottom,left,right parameters define viewport.
     */
-    std::vector<Triangle4D> runVertexPipeline(const Model3D& model, 
-        const Camera& camera, ViewPort vp, WindingOrder order, 
-        Material material, const LightParameters& light);
-
+public:
+    void runVertexPipeline(const Model3D& model);
+    void runRasterization();
+public:
+    Camera camera;
+    Viewport vp;
+    WindingOrder order;
+    Material material;
+    LightParameters light;
+    std::vector<Triangle> triangles;
+    FrameBuffer buffer;
+    PolygonMode mode;
+private:
     Vector3f calculateIllumination(const Vector3f& vertex, 
         const Vector3f& normal, const Material& material, const Camera& camera, 
         const LightParameters& light);
-    
-    void runRasterization(const std::vector<Triangle4D>& triangles, 
-        FrameBuffer& buffer, PolygonMode mode);
-    void rasterTriangle(Triangle4D& triangle, FrameBuffer& buffer, 
+    void rasterTriangle(Triangle& triangle, FrameBuffer& buffer, 
         PolygonMode mode);
-    std::vector<Vertex> bresenham(const Vertex& start, const Vertex& end, FrameBuffer& buffer, bool output_vertices = false);
-    inline Vertex createInterpolated(const Vertex& start, const Vertex& end, int x, int y);
-    inline void writeToBuffer(Vertex& v, FrameBuffer& buffer);
+    void bresenham(const Vertex& start, const Vertex& end, FrameBuffer& buffer);
+    Vertex createInterpolated(const Vertex& start,const Vertex& end,int x,int y);
+    inline void writeToBuffer(const Vertex& v, FrameBuffer& buffer);
     float degreeToRadians(float angle);
-}
+};
 
 #endif // AlmostGLPipeline_h__
