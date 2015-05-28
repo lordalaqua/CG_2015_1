@@ -42,6 +42,7 @@ signals:
      void setColorB(float B) { model.material.ambient[2] = B; update_camera = true; }
 
     // Lighting, vertex order and polygon mode(polygons,wireframe,etc)controls
+     void setLightingMode(AlmostGL::LightingMode mode) { GL.light.mode = mode; update_camera = true; }
     void switchPolygonMode(AlmostGL::PolygonMode mode) { GL.polygon_mode = mode; }
     void setWindingOrder(AlmostGL::WindingOrder w) { GL.winding_order = w; update_camera = true; }
 

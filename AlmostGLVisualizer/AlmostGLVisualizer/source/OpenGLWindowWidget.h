@@ -30,9 +30,9 @@ public:
     void paintGL();
 
 public: // accessors for signals
-    GLenum windingOrder() { return winding_order; }
-    float fieldOfViewX() { return field_of_view_x; }
-    float fieldOfViewY() { return field_of_view_y; }
+    GLenum windingOrder();
+    float fieldOfViewX();
+    float fieldOfViewY();
 
 signals:
     void windingOrderChanged();
@@ -41,30 +41,30 @@ signals:
 
 public slots:
     // Color Control
-    void setColorR(float R) { color.x = R; }
-    void setColorG(float G) { color.y = G; }
-    void setColorB(float B) { color.z = B; }
+    void setColorR(float R);
+    void setColorG(float G);
+    void setColorB(float B);
 
     // Lighting, vertex order and polygon mode(polygons,wireframe,etc)controls
-    void toggleLighting(bool is_on) { lighting_on = is_on; update_lighting = true; }
-    void setLightingMode(GLenum mode) { lighting_mode = mode; update_lighting = true; }
-    void setWindingOrder(GLenum w) { winding_order = w; update_order = true; }
-    void switchPolygonMode(GLenum mode) { polygon_mode = mode; }
+    void toggleLighting(bool is_on);
+    void setLightingMode(GLenum mode);
+    void setWindingOrder(GLenum w);
+    void switchPolygonMode(GLenum mode);
 
     // Model load interface
     void loadModel(std::string filename);
     
     //Reset Camera
-    void setCameraReset() { reset_camera = true; }
+    void setCameraReset();
 
     // Frustum control
-    void setZNear(double n) { zNear = n; update_camera = true;}
-    void setZFar(double f) { zFar = f; update_camera = true;}
-    void setFOVX(double fov) { field_of_view_x = fov; update_camera = true; }
-    void setFOVY(double fov) { field_of_view_y = fov; update_camera = true; }
+    void setZNear(double n);
+    void setZFar(double f);
+    void setFOVX(double fov);
+    void setFOVY(double fov);
 
     // Camera Transforms
-    void setFixedCenter(bool fixed) { fixed_center = fixed; }
+    void setFixedCenter(bool fixed);
     void translateCameraX(float x);
     void translateCameraY(float y);
     void translateCameraZ(float z);    
@@ -85,19 +85,23 @@ private:    // Class data members
     Vector3f object_center;
 
     // Color and lighting variables
-    Vector3f color;
     GLenum polygon_mode;
     GLenum winding_order;
     GLenum lighting_mode;
     bool lighting_on;
+
+    Vector3f ambient_light;
+    Vector3f light_color;
+
+    // Translation control variable
     bool fixed_center;
 
+    // Camera and viewport variables
     GLdouble field_of_view_x;
     GLdouble field_of_view_y;
     GLdouble zNear;
     GLdouble zFar;
 
-    // Camera variables
     Vector3f camera_original_position;
     Vector3f camera_position;
     Vector3f camera_look;

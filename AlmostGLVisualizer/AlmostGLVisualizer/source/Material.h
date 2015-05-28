@@ -17,7 +17,7 @@ public:
     Vector3f ambient;
     Vector3f diffuse;
     Vector3f specular;
-    float shine;
+    int shine;
 };
 
 

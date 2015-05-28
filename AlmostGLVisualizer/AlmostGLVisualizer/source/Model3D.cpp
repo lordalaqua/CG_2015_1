@@ -49,6 +49,7 @@ bool Model3D::loadFromFile(const std::string& filename)
             {
                 file >> trash >> new_tri.vertex[j].x >> new_tri.vertex[j].y >> new_tri.vertex[j].z;
                 file >> new_tri.normal[j].x >> new_tri.normal[j].y >> new_tri.normal[j].z;
+                new_tri.normal[j].normalize();
                 file >> new_tri.material_index[j];
                 updateBoundingBox(new_tri.vertex[j]);
             }

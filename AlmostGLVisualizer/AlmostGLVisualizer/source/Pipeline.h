@@ -27,21 +27,9 @@
 */
 namespace AlmostGL
 {
+
     class Pipeline
     {
-    public:
-        struct Vertex
-        {
-            Vector4f pos;
-            Vector3f color;
-            float interpolation_factor;
-        };
-
-        struct Triangle
-        {
-            Vertex v[3];
-            bool removed;
-        };
 
     public:
         void runVertexPipeline(const Model3D& model);
@@ -68,7 +56,7 @@ namespace AlmostGL
             PolygonMode mode);
         void bresenham(const Vertex& start, const Vertex& end, FrameBuffer& buffer);
         Vertex createInterpolated(const Vertex& start, const Vertex& end, int x, int y);
-        inline void writeToBuffer(const Vertex& v, FrameBuffer& buffer);
+        inline void writeToBuffer(Vertex v, FrameBuffer& buffer);
         float degreeToRadians(float angle);
     };
 } // namespace AlmostGL

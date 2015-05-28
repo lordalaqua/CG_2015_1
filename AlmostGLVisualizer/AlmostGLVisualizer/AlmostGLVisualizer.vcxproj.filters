@@ -33,9 +33,6 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Header Files\AlmostGL">
-      <UniqueIdentifier>{99792c45-d72a-4fd4-81d3-0b88669227ea}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -132,17 +129,17 @@
     <ClInclude Include="source\Viewport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\Pipeline.h">
-      <Filter>Header Files\AlmostGL</Filter>
-    </ClInclude>
     <ClInclude Include="source\AlmostGLParameters.h">
-      <Filter>Header Files\AlmostGL</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\FrameBuffer.h">
-      <Filter>Header Files\AlmostGL</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\LightParameters.h">
-      <Filter>Header Files\AlmostGL</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pipeline.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,9 +4,12 @@ AlmostGLWindowWidget::AlmostGLWindowWidget(QWidget *parent) : QOpenGLWidget(pare
 , reset_camera(false)
 , fixed_center(false)
 {
-    model.material = Material({ 1.f, 0.f, 0.f }, { 1.f, 0.f, 0.f }, { 1.f, 1.f, 1.f }, 2);
+    model.material = Material({ 1.f, 0.f, 0.f }, { .5f, .5f, .5f }, { .5f, .5f, .5f }, 128);
     GL.polygon_mode = AlmostGL::POINTS;
     GL.winding_order = AlmostGL::CW;
+    GL.light.ambient_color = { 0.0f, 0.0f, 0.0f };
+    GL.light.sources.push_back(AlmostGL::LightSource());
+    GL.light.sources[0].color = { 1.f, 1.f, 1.f };
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.start(300);
 }
@@ -54,6 +57,8 @@ void AlmostGLWindowWidget::updateCamera()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(GL.viewport.left, GL.viewport.right, GL.viewport.bottom, GL.viewport.top);
+    if (GL.light.mode != AlmostGL::LightingMode::NONE)
+        GL.light.sources[0].position = GL.camera.position();
     GL.runVertexPipeline(model);
     glFlush();
 }

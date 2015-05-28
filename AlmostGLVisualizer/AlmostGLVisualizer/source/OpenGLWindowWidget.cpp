@@ -1,32 +1,38 @@
 #include "OpenGLWindowWidget.h"
 
+/* Initializes Class members to starting values */
 OpenGLWindowWidget::OpenGLWindowWidget(QWidget *parent) 
 : QOpenGLWidget(parent)
-, color({ 1.0, 0.0, 0.0 })
-, polygon_mode(GL_POINT)
-, winding_order (GL_CCW)
-, update_camera(false)
-, update_order(false)
-, reset_camera(false)
-, update_lighting(false)
-, lighting_on(false)
-, lighting_mode(GL_SMOOTH)
-, fixed_center(false)
 , field_of_view_x(60)
 , field_of_view_y(60)
 , zNear(1)
 , zFar(10000.0)
 , camera_x({ 1, 0, 0 })
 , camera_y({ 0, 1, 0 })
-, camera_z({ 0, 0, -1 })
-{
-    connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer.start(300);
-}
-
-void OpenGLWindowWidget::initializeGL()
+, camera_z({ 0, 0,-1 })
+, polygon_mode(GL_POINT)
+, winding_order(GL_CCW)
+, lighting_on(false)
+, lighting_mode(GL_SMOOTH)
+, fixed_center(false)
+, update_camera(false)
+, update_order(false)
+, reset_camera(false)
+, update_lighting(false)
 {
     loadModel("C:/Projects/CG_2015_1/OpenGLVisualizer/OpenGLVisualizer/Resources/cow_up.txt");
+    model.material = Material({ 1.f, 0.f, 0.f }, {.5f, .5f, .5f }, { .5f, .5f, .5f }, 128);
+    ambient_light = { 0.5f, 0.5f, 0.5f };
+    light_color = { 1.f, 1.f, 1.f };
+
+    connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
+    timer.start(200);
+}
+
+//=========================== Main OpenGL Loop Functions =======================
+/* Initialize OpenGL related functions */
+void OpenGLWindowWidget::initializeGL()
+{
     initializeOpenGLFunctions();
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClearDepth(1);
@@ -38,12 +44,14 @@ void OpenGLWindowWidget::initializeGL()
     resetCamera();
 }
 
+/* Handle viewport resizing */
 void OpenGLWindowWidget::resizeGL(int width, int height)
 {
     glViewport(0, 0, width, height);
     updateCamera();
 }
 
+/* Drawing function executed for every frame */
 void OpenGLWindowWidget::paintGL()
 {
     if (reset_camera)
@@ -66,6 +74,11 @@ void OpenGLWindowWidget::paintGL()
         updateLighting();
         update_lighting = false;
     }
+    if (lighting_on)
+    {
+        GLfloat light_position[] = { camera_position.x, camera_position.y, camera_position.z };
+        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    }
 
     glPolygonMode(GL_FRONT_AND_BACK, polygon_mode);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -75,46 +88,25 @@ void OpenGLWindowWidget::paintGL()
         for (int i = 0; i < 3; ++i)
         {            
             if (lighting_on)
+            {                
+                glColor3f(model.material.ambient[0], model.material.ambient[1], model.material.ambient[2]);
+                GLfloat diffuse[] = { model.material.diffuse.x, model.material.diffuse.y, model.material.diffuse.z };
+                glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+                 GLfloat specular[] = { model.material.specular.x, model.material.specular.y, model.material.specular.z };
+                 glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+                 GLfloat shine = model.material.shine;
+                 glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, shine);
+            }
+            else
             {
-                auto v_specular = model.materials[triangle.material_index[i]].specular;
-                GLfloat specular[] = { v_specular.x, v_specular.y, v_specular.z };
-                //auto v_shine = model.materials[triangle.material_index[i]].shine;
-                GLfloat shine[] = { 12 };
-                glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-                glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shine);
+                glColor3f(model.material.ambient[0], model.material.ambient[1], model.material.ambient[2]);
             }            
-            glColor3f(color.x, color.y, color.z);
             glNormal3f(triangle.normal[i].x, triangle.normal[i].y, triangle.normal[i].z);
             glVertex3f(triangle.vertex[i].x, triangle.vertex[i].y, triangle.vertex[i].z);
         }
     }
     glEnd();
     glFlush();
-}
-
-void OpenGLWindowWidget::recalculateOriginalPositions()
-{
-    object_center = {
-        model.min.x + (model.max.x - model.min.x) / 2,
-        model.min.y + (model.max.y - model.min.y) / 2,
-        model.min.z + (model.max.z - model.min.z) / 2 };
-    float max = std::max(model.max.x - model.min.x, model.max.y - model.min.y);
-    camera_original_position = object_center + Vector3f{ 0, 0, 1.0f*(max) };
-}
-
-void OpenGLWindowWidget::findWindingOrder()
-{
-    // Find winding order
-    Vector3f v0 = model.triangles[0].vertex[0];
-    Vector3f v1 = model.triangles[0].vertex[1];
-    Vector3f v2 = model.triangles[0].vertex[2];
-    Vector3f calculated_normal = crossProduct(v1 - v0, v2 - v0).normalize();
-    Vector3f face_normal = model.triangles[0].face_normal;
-    if (dotProduct(calculated_normal, face_normal) > 0)
-        winding_order = GL_CCW;
-    else
-        winding_order = GL_CW;
-    emit windingOrderChanged();
 }
 
 void OpenGLWindowWidget::resetCamera()
@@ -148,27 +140,20 @@ void OpenGLWindowWidget::updateLighting()
 {
     if(lighting_on)
     {
-        glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-        glEnable(GL_COLOR_MATERIAL);
         glEnable(GL_LIGHTING);
-        
+        glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT);
+        glEnable(GL_COLOR_MATERIAL);
         glShadeModel(lighting_mode);
-        GLfloat light_ambient[] = { 1.f, 0.f, 1.f};
-        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
-        GLfloat light_diffuse[] = { 1.0, 1.0, 1.0 };
-        GLfloat light_specular[] = { 1.0, 1.0, 1.0 };
-        GLfloat light_position1[] = { camera_position.x, camera_position.y, camera_position.z};
-        GLfloat light_direction1[] = { camera_z.x, camera_z.y, camera_z.z };
-        GLfloat light_exponent[] = { 128 };
-        GLfloat light_cutoff[] = { 180 };
-        //glEnable(GL_LIGHT0);
-        //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-        //glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-        //glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-        //glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light_direction1);
-        //glLightfv(GL_LIGHT0, GL_SPOT_EXPONENT, light_exponent);
-        //glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, light_cutoff);
-        //glLightfv(GL_LIGHT0, GL_POSITION, light_position1);
+
+        GLfloat light_ambient[] = {ambient_light[0],ambient_light[1],ambient_light[2]};
+        GLfloat color[] = { light_color[0],light_color[1],light_color[2]};
+        glEnable(GL_LIGHT0);
+        glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, color);
+        glLightfv(GL_LIGHT0, GL_SPECULAR, color);
+        glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.f);
+        glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.f);
+        glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.f);
     }
     else
     {
@@ -176,8 +161,25 @@ void OpenGLWindowWidget::updateLighting()
     }
 }
 
-// SLOTS
+//========================= Getters for GUI elements ===========================
+GLenum OpenGLWindowWidget::windingOrder()
+{
+    return winding_order;
+}
 
+float OpenGLWindowWidget::fieldOfViewY()
+{
+    return field_of_view_y;
+}
+
+float OpenGLWindowWidget::fieldOfViewX()
+{
+    return field_of_view_x;
+}
+
+//===================== Slots to connect GUI element actions ===================
+
+//       =========== Loading model and calculating model info =============
 void OpenGLWindowWidget::loadModel(std::string filename)
 {
     model.loadFromFile(filename);
@@ -186,6 +188,33 @@ void OpenGLWindowWidget::loadModel(std::string filename)
     update_order = true;
     reset_camera = true;
 }
+
+void OpenGLWindowWidget::recalculateOriginalPositions()
+{
+    object_center = {
+        model.min.x + (model.max.x - model.min.x) / 2,
+        model.min.y + (model.max.y - model.min.y) / 2,
+        model.min.z + (model.max.z - model.min.z) / 2 };
+    float max = std::max(model.max.x - model.min.x, model.max.y - model.min.y);
+    camera_original_position = object_center + Vector3f{ 0, 0, 1.0f*(max) };
+}
+
+void OpenGLWindowWidget::findWindingOrder()
+{
+    // Find winding order
+    Vector3f v0 = model.triangles[0].vertex[0];
+    Vector3f v1 = model.triangles[0].vertex[1];
+    Vector3f v2 = model.triangles[0].vertex[2];
+    Vector3f calculated_normal = crossProduct(v1 - v0, v2 - v0).normalize();
+    Vector3f face_normal = model.triangles[0].face_normal;
+    if (dotProduct(calculated_normal, face_normal) > 0)
+        winding_order = GL_CCW;
+    else
+        winding_order = GL_CW;
+    emit windingOrderChanged();
+}
+
+//       ================ Camera translation and rotation ==================
 
 void OpenGLWindowWidget::translateCameraX(float x)
 {
@@ -247,6 +276,73 @@ void OpenGLWindowWidget::rotateCameraZ(int angle)
     camera_y = rotate(camera_y, camera_z, angle);
     camera_x = rotate(camera_x, camera_z, angle);
     update_camera = true;
+}
+
+void OpenGLWindowWidget::setFixedCenter(bool fixed)
+{
+    fixed_center = fixed;
+}
+
+void OpenGLWindowWidget::setFOVY(double fov)
+{
+    field_of_view_y = fov; update_camera = true;
+}
+
+void OpenGLWindowWidget::setFOVX(double fov)
+{
+    field_of_view_x = fov; update_camera = true;
+}
+
+void OpenGLWindowWidget::setZFar(double f)
+{
+    zFar = f; update_camera = true;
+}
+
+void OpenGLWindowWidget::setZNear(double n)
+{
+    zNear = n; update_camera = true;
+}
+
+void OpenGLWindowWidget::setCameraReset()
+{
+    reset_camera = true;
+}
+
+//       ======== Rendering mode and lighting properties controls ========
+
+void OpenGLWindowWidget::switchPolygonMode(GLenum mode)
+{
+    polygon_mode = mode;
+}
+
+void OpenGLWindowWidget::setWindingOrder(GLenum w)
+{
+    winding_order = w; update_order = true;
+}
+
+void OpenGLWindowWidget::setLightingMode(GLenum mode)
+{
+    lighting_mode = mode; update_lighting = true;
+}
+
+void OpenGLWindowWidget::toggleLighting(bool is_on)
+{
+    lighting_on = is_on; update_lighting = true;
+}
+
+void OpenGLWindowWidget::setColorR(float R)
+{
+    model.material.ambient[0] = R;
+}
+
+void OpenGLWindowWidget::setColorG(float G)
+{
+    model.material.ambient[1] = G;
+}
+
+void OpenGLWindowWidget::setColorB(float B)
+{
+    model.material.ambient[2] = B;
 }
 
 

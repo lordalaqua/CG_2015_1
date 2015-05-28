@@ -16,7 +16,7 @@ namespace AlmostGL
     {
         LightParameters()
         : mode(NONE),
-        ambient_color({ 1.f, 1.f, 1.f }),
+        ambient_color({ .5f, .5f, .5f }),
         constant_attenuation(1.f),
         linear_attenuation(0.f),
         quadratic_attenuation(0.f) {}

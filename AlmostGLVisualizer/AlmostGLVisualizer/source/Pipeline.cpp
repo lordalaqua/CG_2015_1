@@ -206,7 +206,7 @@ namespace AlmostGL
             // Calculate diffuse and specular component for each light source
             for (LightSource source : light.sources)
             {
-                Vector3f L = (source.position - vertex);
+                Vector3f L = (vertex - source.position);
                 float dist = L.length();
                 float att_factor = 1 / (
                     light.constant_attenuation +
@@ -237,10 +237,7 @@ namespace AlmostGL
                 for (int i = 0; i < 3; ++i)
                 {
                     // Points polygon mode
-                    triangle.v[i].color /= triangle.v[i].interpolation_factor;
-                    buffer(triangle.v[i].pos.x, triangle.v[i].pos.y, AlmostGL::RED) = triangle.v[i].color[0];
-                    buffer(triangle.v[i].pos.x, triangle.v[i].pos.y, AlmostGL::GREEN) = triangle.v[i].color[1];
-                    buffer(triangle.v[i].pos.x, triangle.v[i].pos.y, AlmostGL::BLUE) = triangle.v[i].color[2];
+                    writeToBuffer(triangle.v[i], buffer);
                 }
             }
             else if (polygon_mode == WIREFRAME)
@@ -351,7 +348,7 @@ namespace AlmostGL
         }
     }
     
-    Pipeline::Vertex Pipeline::createInterpolated(const Vertex& start,
+    Vertex Pipeline::createInterpolated(const Vertex& start,
         const Vertex& end, int x, int y)
     {
         Vertex v;
@@ -367,12 +364,10 @@ namespace AlmostGL
         return v;
     }
 
-    void Pipeline::writeToBuffer(const Vertex& v, FrameBuffer& buffer)
+    void Pipeline::writeToBuffer(Vertex v, FrameBuffer& buffer)
     {
-        Vector3f color = v.color / v.interpolation_factor;
-        buffer(v.pos.x, v.pos.y, AlmostGL::RED) = color[0];
-        buffer(v.pos.x, v.pos.y, AlmostGL::GREEN) = color[1];
-        buffer(v.pos.x, v.pos.y, AlmostGL::BLUE) = color[2];
+        v.color /= v.interpolation_factor;
+        buffer.writeVertex(v);
     }
 
     float Pipeline::degreeToRadians(float angle)
