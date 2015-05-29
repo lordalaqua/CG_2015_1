@@ -20,11 +20,8 @@ OpenGLWindowWidget::OpenGLWindowWidget(QWidget *parent)
 , reset_camera(false)
 , update_lighting(false)
 {
-    loadModel("C:/Projects/CG_2015_1/OpenGLVisualizer/OpenGLVisualizer/Resources/cow_up.txt");
-    model.material = Material({ 1.f, 0.f, 0.f }, {.5f, .5f, .5f }, { .5f, .5f, .5f }, 128);
     ambient_light = { 0.5f, 0.5f, 0.5f };
     light_color = { 1.f, 1.f, 1.f };
-
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.start(200);
 }
@@ -42,6 +39,8 @@ void OpenGLWindowWidget::initializeGL()
     glEnable(GL_NORMALIZE);
     glEnable(GL_DEPTH_TEST);
     resetCamera();
+    loadModel("C:/Projects/CG_2015_1/OpenGLVisualizer/OpenGLVisualizer/Resources/cow_up.txt");
+    model.material = Material({ 1.f, 0.4f, 0.f }, { .5f, .5f, .5f }, { .5f, .5f, .5f }, 5);
 }
 
 /* Handle viewport resizing */
@@ -74,11 +73,6 @@ void OpenGLWindowWidget::paintGL()
         updateLighting();
         update_lighting = false;
     }
-    if (lighting_on)
-    {
-        GLfloat light_position[] = { camera_position.x, camera_position.y, camera_position.z };
-        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    }
 
     glPolygonMode(GL_FRONT_AND_BACK, polygon_mode);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -88,20 +82,21 @@ void OpenGLWindowWidget::paintGL()
         for (int i = 0; i < 3; ++i)
         {            
             if (lighting_on)
-            {                
-                glColor3f(model.material.ambient[0], model.material.ambient[1], model.material.ambient[2]);
+            {
+                GLfloat ambient[] = { model.material.ambient[0], model.material.ambient[1], model.material.ambient[2] };
+                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
                 GLfloat diffuse[] = { model.material.diffuse.x, model.material.diffuse.y, model.material.diffuse.z };
                 glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
-                 GLfloat specular[] = { model.material.specular.x, model.material.specular.y, model.material.specular.z };
-                 glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-                 GLfloat shine = model.material.shine;
-                 glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, shine);
+                GLfloat specular[] = { model.material.specular.x, model.material.specular.y, model.material.specular.z };
+                glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+                GLfloat shine = model.material.shine;
+                glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, shine);
             }
             else
             {
                 glColor3f(model.material.ambient[0], model.material.ambient[1], model.material.ambient[2]);
             }            
-            glNormal3f(triangle.normal[i].x, triangle.normal[i].y, triangle.normal[i].z);
+            glNormal3f(-triangle.normal[i].x, -triangle.normal[i].y, -triangle.normal[i].z);
             glVertex3f(triangle.vertex[i].x, triangle.vertex[i].y, triangle.vertex[i].z);
         }
     }
@@ -141,16 +136,18 @@ void OpenGLWindowWidget::updateLighting()
     if(lighting_on)
     {
         glEnable(GL_LIGHTING);
-        glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT);
-        glEnable(GL_COLOR_MATERIAL);
         glShadeModel(lighting_mode);
-
         GLfloat light_ambient[] = {ambient_light[0],ambient_light[1],ambient_light[2]};
         GLfloat color[] = { light_color[0],light_color[1],light_color[2]};
+        GLfloat light_position[] = { camera_original_position.x,
+            camera_original_position.y, camera_original_position.z };
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
+        glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 0);
         glEnable(GL_LIGHT0);
         glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, color);
         glLightfv(GL_LIGHT0, GL_SPECULAR, color);
+        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
         glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.f);
         glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.f);
         glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.f);
@@ -329,20 +326,4 @@ void OpenGLWindowWidget::toggleLighting(bool is_on)
 {
     lighting_on = is_on; update_lighting = true;
 }
-
-void OpenGLWindowWidget::setColorR(float R)
-{
-    model.material.ambient[0] = R;
-}
-
-void OpenGLWindowWidget::setColorG(float G)
-{
-    model.material.ambient[1] = G;
-}
-
-void OpenGLWindowWidget::setColorB(float B)
-{
-    model.material.ambient[2] = B;
-}
-
 

@@ -10,21 +10,95 @@ AlmostGLVisualizer::AlmostGLVisualizer(QWidget *parent)
 
 void AlmostGLVisualizer::setupWidgetConnections()
 {
-    //================ Color input sliders =====================================
+    //================ Material input sliders ==================================
     connect(ui.sliderRed, &QSlider::valueChanged, [&]
-    { 
-        ui.almostGLWidget->setColorR(ui.sliderRed->value() / 255.0); 
-        ui.openGLWidget->setColorR(ui.sliderRed->value() / 255.0);
+    {
+        if (ui.ambientButton->isChecked())
+        {
+            ui.almostGLWidget->setAmbientR(ui.sliderRed->value() / 255.0);
+            ui.openGLWidget->setAmbientR(ui.sliderRed->value() / 255.0);
+        }
+        else if (ui.diffuseButton->isChecked())
+        {
+            ui.almostGLWidget->setDiffuseR(ui.sliderRed->value() / 255.0);
+            ui.openGLWidget->setDiffuseR(ui.sliderRed->value() / 255.0);
+        }
+        else if (ui.specularButton->isChecked())
+        {
+            ui.almostGLWidget->setSpecularR(ui.sliderRed->value() / 255.0);
+            ui.openGLWidget->setSpecularR(ui.sliderRed->value() / 255.0);
+        }
     });
     connect(ui.sliderGreen, &QSlider::valueChanged, [&]
     { 
-        ui.almostGLWidget->setColorG(ui.sliderGreen->value() / 255.0);
-        ui.openGLWidget->setColorG(ui.sliderGreen->value() / 255.0);
+        if (ui.ambientButton->isChecked())
+        {
+            ui.almostGLWidget->setAmbientG(ui.sliderGreen->value() / 255.0);
+            ui.openGLWidget->setAmbientG(ui.sliderGreen->value() / 255.0);
+        }
+        else if (ui.diffuseButton->isChecked())
+        {
+            ui.almostGLWidget->setDiffuseG(ui.sliderGreen->value() / 255.0);
+            ui.openGLWidget->setDiffuseG(ui.sliderGreen->value() / 255.0);
+        }
+        else if (ui.specularButton->isChecked())
+        {
+            ui.almostGLWidget->setSpecularG(ui.sliderGreen->value() / 255.0);
+            ui.openGLWidget->setSpecularG(ui.sliderGreen->value() / 255.0);
+        }
     });
     connect(ui.sliderBlue, &QSlider::valueChanged, [&]
     { 
-        ui.almostGLWidget->setColorB(ui.sliderBlue->value() / 255.0);
-        ui.openGLWidget->setColorB(ui.sliderBlue->value() / 255.0);
+        if (ui.ambientButton->isChecked())
+        {
+            ui.almostGLWidget->setAmbientB(ui.sliderBlue->value() / 255.0);
+            ui.openGLWidget->setAmbientB(ui.sliderBlue->value() / 255.0);
+        }
+        else if (ui.diffuseButton->isChecked())
+        {
+            ui.almostGLWidget->setDiffuseB(ui.sliderBlue->value() / 255.0);
+            ui.openGLWidget->setDiffuseB(ui.sliderBlue->value() / 255.0);
+        }
+        else if (ui.specularButton->isChecked())
+        {
+            ui.almostGLWidget->setSpecularB(ui.sliderBlue->value() / 255.0);
+            ui.openGLWidget->setSpecularB(ui.sliderBlue->value() / 255.0);
+        }
+    });
+    connect(ui.shininessSlider, &QSlider::valueChanged, [&]
+    {
+        ui.almostGLWidget->setShininess(ui.shininessSlider->value());
+        ui.openGLWidget->setShininess(ui.shininessSlider->value());
+    });
+
+    connect(ui.ambientButton, &QRadioButton::toggled, [&] 
+    {
+        if (ui.ambientButton->isChecked())
+        {
+            ui.sliderRed->setValue(ui.almostGLWidget->getAmbientR()*255.0);
+            ui.sliderGreen->setValue(ui.almostGLWidget->getAmbientG()*255.0);
+            ui.sliderBlue->setValue(ui.almostGLWidget->getAmbientB()*255.0);
+        }
+    });
+
+    connect(ui.diffuseButton, &QRadioButton::toggled, [&]
+    {
+        if (ui.diffuseButton->isChecked())
+        {
+            ui.sliderRed->setValue(ui.almostGLWidget->getDiffuseR()*255.0);
+            ui.sliderGreen->setValue(ui.almostGLWidget->getDiffuseG()*255.0);
+            ui.sliderBlue->setValue(ui.almostGLWidget->getDiffuseB()*255.0);
+        }
+    });
+
+    connect(ui.specularButton, &QRadioButton::toggled, [&]
+    {
+        if (ui.specularButton->isChecked())
+        {
+            ui.sliderRed->setValue(ui.almostGLWidget->getSpecularR()*255.0);
+            ui.sliderGreen->setValue(ui.almostGLWidget->getSpecularG()*255.0);
+            ui.sliderBlue->setValue(ui.almostGLWidget->getSpecularB()*255.0);
+        }
     });
 
     //==================== Enable Lighting Checkbox ============================
@@ -64,6 +138,71 @@ void AlmostGLVisualizer::setupWidgetConnections()
         }
     });
 
+    //==================== Light Color Controls ================================
+
+    connect(ui.redLightSlider, &QSlider::valueChanged, [&]
+    {
+        if (ui.ambientLightButton->isChecked())
+        {
+            ui.almostGLWidget->setAmbientLightR(ui.redLightSlider->value() / 255.0);
+            ui.openGLWidget->setAmbientLightR(ui.redLightSlider->value() / 255.0);
+        }
+        else if (ui.lightSourceButton->isChecked())
+        {
+            ui.almostGLWidget->setSourceLightR(ui.redLightSlider->value() / 255.0);
+            ui.openGLWidget->setSourceLightR(ui.redLightSlider->value() / 255.0);
+        }
+    });
+
+    connect(ui.greenLightSlider, &QSlider::valueChanged, [&]
+    {
+        if (ui.ambientLightButton->isChecked())
+        {
+            ui.almostGLWidget->setAmbientLightG(ui.greenLightSlider->value() / 255.0);
+            ui.openGLWidget->setAmbientLightG(ui.greenLightSlider->value() / 255.0);
+        }
+        else if (ui.lightSourceButton->isChecked())
+        {
+            ui.almostGLWidget->setSourceLightG(ui.greenLightSlider->value() / 255.0);
+            ui.openGLWidget->setSourceLightG(ui.greenLightSlider->value() / 255.0);
+        }
+    });
+
+    connect(ui.blueLightSlider, &QSlider::valueChanged, [&]
+    {
+        if (ui.ambientLightButton->isChecked())
+        {
+            ui.almostGLWidget->setAmbientLightB(ui.blueLightSlider->value() / 255.0);
+            ui.openGLWidget->setAmbientLightB(ui.blueLightSlider->value() / 255.0);
+        }
+        else if (ui.lightSourceButton->isChecked())
+        {
+            ui.almostGLWidget->setSourceLightB(ui.blueLightSlider->value() / 255.0);
+            ui.openGLWidget->setSourceLightB(ui.blueLightSlider->value() / 255.0);
+        }
+    });
+
+    connect(ui.ambientLightButton, &QRadioButton::toggled, [&]
+    {
+        if (ui.ambientLightButton->isChecked())
+        {
+            ui.redLightSlider->setValue(ui.almostGLWidget->getAmbientLightR()*255.0);
+            ui.greenLightSlider->setValue(ui.almostGLWidget->getAmbientLightG()*255.0);
+            ui.blueLightSlider->setValue(ui.almostGLWidget->getAmbientLightB()*255.0);
+        }
+    });
+
+    connect(ui.lightSourceButton, &QRadioButton::toggled, [&]
+    {
+        if (ui.lightSourceButton->isChecked())
+        {
+            ui.redLightSlider->setValue(ui.almostGLWidget->getSourceLightR()*255.0);
+            ui.greenLightSlider->setValue(ui.almostGLWidget->getSourceLightG()*255.0);
+            ui.blueLightSlider->setValue(ui.almostGLWidget->getSourceLightB()*255.0);
+        }
+    });
+
+
     //==================== Vertex Order Radio buttons ==========================
     connect(ui.radioButtonCW, &QRadioButton::toggled, [&]
     {
@@ -86,10 +225,13 @@ void AlmostGLVisualizer::setupWidgetConnections()
         ui.almostGLWidget->windingOrder() == AlmostGL::CW ? 
             ui.radioButtonCW->setChecked(true) : 
             ui.radioButtonCCW->setChecked(true);
-        ui.openGLWidget->windingOrder() == GL_CW ? 
-            ui.radioButtonCW->setChecked(true) : 
-            ui.radioButtonCCW->setChecked(true); 
     });
+//     connect(ui.openGLWidget, &OpenGLWindowWidget::windingOrderChanged, [&]
+//     {
+//         ui.openGLWidget->windingOrder() == GL_CW ?
+//             ui.radioButtonCW->setChecked(true) :
+//             ui.radioButtonCCW->setChecked(true);
+//     });
 
     //=================== Polygon mode radio buttons ===========================
     connect(ui.radioButtonFill, &QRadioButton::toggled, [&]
@@ -117,15 +259,15 @@ void AlmostGLVisualizer::setupWidgetConnections()
     });
 
     //======================= Znear and Zfar plane controls ====================
-    connect(ui.lineEditNear, &QLineEdit::textChanged, [&]
+    connect(ui.nearSlider, &QSlider::valueChanged, [&]
     {
-        ui.almostGLWidget->setZNear(ui.lineEditNear->text().toFloat());
-        ui.openGLWidget->setZNear(ui.lineEditNear->text().toFloat());
+        ui.almostGLWidget->setZNear(ui.nearSlider->value());
+        ui.openGLWidget->setZNear(ui.nearSlider->value());
     });
-    connect(ui.lineEditFar, &QLineEdit::textChanged, [&]
+    connect(ui.farSlider, &QSlider::valueChanged, [&]
     {
-        ui.almostGLWidget->setZFar(ui.lineEditFar->text().toFloat());
-        ui.openGLWidget->setZFar(ui.lineEditFar->text().toFloat());
+        ui.almostGLWidget->setZFar(ui.farSlider->value());
+        ui.openGLWidget->setZFar(ui.farSlider->value());
     });
 
     //========================= Field of view controls =========================

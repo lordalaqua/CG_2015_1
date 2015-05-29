@@ -41,10 +41,39 @@ signals:
 
 public slots:
     // Color Control
-    void setColorR(float R);
-    void setColorG(float G);
-    void setColorB(float B);
+    void setAmbientR(float R) { model.material.ambient[0] = R;}
+    void setAmbientG(float G) { model.material.ambient[1] = G;}
+    void setAmbientB(float B) { model.material.ambient[2] = B;}
+    void setDiffuseR(float R) { model.material.diffuse[0] = R;}
+    void setDiffuseG(float G) { model.material.diffuse[1] = G;}
+    void setDiffuseB(float B) { model.material.diffuse[2] = B;}
+    void setSpecularR(float R) { model.material.specular[0] = R; }
+    void setSpecularG(float G) { model.material.specular[1] = G; }
+    void setSpecularB(float B) { model.material.specular[2] = B; }
+    void setShininess(float s) { model.material.shine = s;  }
+    float getAmbientR() { return model.material.ambient[0]; }
+    float getAmbientG() { return model.material.ambient[1]; }
+    float getAmbientB() { return model.material.ambient[2]; }
+    float getDiffuseR() { return model.material.diffuse[0]; }
+    float getDiffuseG() { return model.material.diffuse[1]; }
+    float getDiffuseB() { return model.material.diffuse[2]; }
+    float getSpecularR() { return model.material.specular[0]; }
+    float getSpecularG() { return model.material.specular[1]; }
+    float getSpecularB() { return model.material.specular[2]; }
+    float getShininess() { return model.material.shine; }
 
+    void setAmbientLightR(float R) { ambient_light[0] = R; update_lighting = true;}
+    void setAmbientLightG(float G) { ambient_light[1] = G; update_lighting = true;}
+    void setAmbientLightB(float B) { ambient_light[2] = B; update_lighting = true;}
+    void setSourceLightR(float R) { light_color[0] = R; update_lighting = true; }
+    void setSourceLightG(float G) { light_color[1] = G; update_lighting = true; }
+    void setSourceLightB(float B) { light_color[2] = B; update_lighting = true; }
+    float getAmbientLightR() { return ambient_light[0];}
+    float getAmbientLightG() { return ambient_light[1];}
+    float getAmbientLightB() { return ambient_light[2];}
+    float getSourceLightR() { return light_color[0]; }
+    float getSourceLightG() { return light_color[1]; }
+    float getSourceLightB() { return light_color[2]; }
     // Lighting, vertex order and polygon mode(polygons,wireframe,etc)controls
     void toggleLighting(bool is_on);
     void setLightingMode(GLenum mode);

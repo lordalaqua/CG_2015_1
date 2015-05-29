@@ -37,12 +37,42 @@ signals:
     void FOVYchanged();
  public slots:
     // Color Control
-     void setColorR(float R) { model.material.ambient[0] = R; update_camera = true; }
-     void setColorG(float G) { model.material.ambient[1] = G; update_camera = true; }
-     void setColorB(float B) { model.material.ambient[2] = B; update_camera = true; }
+    void setAmbientR(float R) { model.material.ambient[0] = R; update_camera = true; }
+    void setAmbientG(float G) { model.material.ambient[1] = G; update_camera = true; }
+    void setAmbientB(float B) { model.material.ambient[2] = B; update_camera = true; }
+    void setDiffuseR(float R) { model.material.diffuse[0] = R; update_camera = true; }
+    void setDiffuseG(float G) { model.material.diffuse[1] = G; update_camera = true; }
+    void setDiffuseB(float B) { model.material.diffuse[2] = B; update_camera = true; }
+    void setSpecularR(float R) { model.material.specular[0] = R; update_camera = true; }
+    void setSpecularG(float G) { model.material.specular[1] = G; update_camera = true; }
+    void setSpecularB(float B) { model.material.specular[2] = B; update_camera = true; }
+    void setShininess(float s) { model.material.shine = s; update_camera = true; }
+    float getAmbientR() { return model.material.ambient[0]; }
+    float getAmbientG() { return model.material.ambient[1]; }
+    float getAmbientB() { return model.material.ambient[2]; }
+    float getDiffuseR() { return model.material.diffuse[0]; }
+    float getDiffuseG() { return model.material.diffuse[1]; }
+    float getDiffuseB() { return model.material.diffuse[2]; }
+    float getSpecularR() { return model.material.specular[0]; }
+    float getSpecularG() { return model.material.specular[1]; }
+    float getSpecularB() { return model.material.specular[2]; }
+    float getShininess() { return model.material.shine; }
+     
+    void setAmbientLightR(float R) { GL.light.ambient_color[0] = R; update_camera = true; }
+    void setAmbientLightG(float G) { GL.light.ambient_color[1] = G; update_camera = true; }
+    void setAmbientLightB(float B) { GL.light.ambient_color[2] = B; update_camera = true; }
+    void setSourceLightR(float R) { GL.light.sources[0].color[0] = R; update_camera = true; }
+    void setSourceLightG(float G) { GL.light.sources[0].color[1] = G; update_camera = true; }
+    void setSourceLightB(float B) { GL.light.sources[0].color[2] = B; update_camera = true; }
+    float getAmbientLightR() { return GL.light.ambient_color[0]; }
+    float getAmbientLightG() { return GL.light.ambient_color[1]; }
+    float getAmbientLightB() { return GL.light.ambient_color[2]; }
+    float getSourceLightR() { return GL.light.sources[0].color[0]; }
+    float getSourceLightG() { return GL.light.sources[0].color[1]; }
+    float getSourceLightB() { return GL.light.sources[0].color[2]; }
 
     // Lighting, vertex order and polygon mode(polygons,wireframe,etc)controls
-     void setLightingMode(AlmostGL::LightingMode mode) { GL.light.mode = mode; update_camera = true; }
+    void setLightingMode(AlmostGL::LightingMode mode) { GL.light.mode = mode; update_camera = true; }
     void switchPolygonMode(AlmostGL::PolygonMode mode) { GL.polygon_mode = mode; }
     void setWindingOrder(AlmostGL::WindingOrder w) { GL.winding_order = w; update_camera = true; }
 
