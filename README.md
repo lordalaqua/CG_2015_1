@@ -10,8 +10,9 @@ do Rio Grande do Sul) Computer Graphics Course.
 
 Branches:
 * Master - Programming Assignment 2 in due date
-* Assignment2Revised - Completed Programming Assignment 2
+* Assignment2Revised - Complete Programming Assignment 2
 * Assignment3 - Programming Assignment 3 in due date
+* Assignment3Revised - Complete Programming Assignment 3
 * Assignment4 - Programming Assignment 4 in due date
 
 
