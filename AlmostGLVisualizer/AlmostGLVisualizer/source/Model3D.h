@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <limits>
+#include "Matrix.h"
 
 /*
     3D model wrapper
@@ -27,11 +28,11 @@ public:
     void updateBoundingBox(Vector3f v);
 
     Triangle3D triangle(int index) { return triangles[index]; }
-    Material material(int index) { return materials[index]; }
+    Material getMaterial(int index) { return materials[index]; }
 public:
     std::vector<Triangle3D> triangles;
     std::vector<Material> materials;
-
+    Material material;
     Vector3f min, max;
 };
 

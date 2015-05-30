@@ -23,8 +23,7 @@ public:
     ~AlmostGLVisualizer() {};
 
 private:
-    void setupOpenGLWidgetConnections();
-    void setupAlmostGLWidgetConnections();
+    void setupWidgetConnections();
     Ui::AlmostGLVisualizerClass ui;
 };
 

@@ -9,10 +9,10 @@ TEST(Model3DReadTest)
     Vector3f ambient = { 0.694f, 0.58f, 0.459f };
     Vector3f diffuse = { 0.992f, 0.941f, 0.863f };
     Vector3f specular = { 1.0, 1.0, 1.0 };
-    CHECK(model.material(0).ambient == ambient);
-    CHECK(model.material(0).diffuse == diffuse);
-    CHECK(model.material(0).specular == specular);
-    CHECK(model.material(0).shine == 0.25);
+    CHECK(model.getMaterial(0).ambient == ambient);
+    CHECK(model.getMaterial(0).diffuse == diffuse);
+    CHECK(model.getMaterial(0).specular == specular);
+    //CHECK(model.getMaterial(0).shine == 0.25);
 
     // Check first triangle is read correctly
     Vector3f vfirst0 = { -1.0, -1.0, -2.0 }, vfirst1 = { 1.0, -1.0, -2.0 },

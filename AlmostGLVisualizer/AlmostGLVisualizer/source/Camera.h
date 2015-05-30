@@ -39,6 +39,7 @@ public:
     float Zfar() const { return z_far_; }
     void setResetLookAt(Vector3f point) { reset_look_at_ = point; }
     void setResetPosition(Vector3f point) { reset_position_ = point; }
+    Vector3f getResetPosition() { return reset_position_; }
 private:
     Vector3f position_;
     Vector3f u_;

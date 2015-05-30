@@ -49,11 +49,27 @@ bool Model3D::loadFromFile(const std::string& filename)
             {
                 file >> trash >> new_tri.vertex[j].x >> new_tri.vertex[j].y >> new_tri.vertex[j].z;
                 file >> new_tri.normal[j].x >> new_tri.normal[j].y >> new_tri.normal[j].z;
+                new_tri.normal[j].normalize();
                 file >> new_tri.material_index[j];
                 updateBoundingBox(new_tri.vertex[j]);
             }
             file >> trash >> trash >> new_tri.face_normal.x >> new_tri.face_normal.y >> new_tri.face_normal.z;
             triangles.push_back(new_tri);
+        }
+        float s = 1000.f / (max.y - min.y);
+        Matrix<3, 3, float> scale = 
+            {{ s, 0, 0}, 
+             { 0, s, 0},
+             { 0, 0, s} };
+        min = std::numeric_limits<float>::max();
+        max = -std::numeric_limits<float>::max();
+        for (Triangle3D &tri : triangles)
+        {
+            for (int i = 0; i < 3; ++i)
+            {
+                tri.vertex[i] = scale*tri.vertex[i];
+                updateBoundingBox(tri.vertex[i]);
+            }
         }
         return true;
     }
