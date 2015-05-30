@@ -9,10 +9,11 @@ do Rio Grande do Sul) Computer Graphics Course.
 * AlmostGLVisualizer (Programming Assignment 2,3,4)
 
 Branches:
-* Master - Programming Assignment 2 in due date
-* Assignment2Revised - Completed Programming Assignment 2
+* Assignment2 - Programming Assignment 2 in due date
+* Assignment2Revised - Complete Programming Assignment 2
 * Assignment3 - Programming Assignment 3 in due date
-* Assignment4 - Programming Assignment 4 in due date
+* Assignment3Revised - Complete Programming Assignment 3
+* Master/Assignment4 - Programming Assignment 4 in due date
 
 
 By Lorenzo Pezzi Dal'Aqua
