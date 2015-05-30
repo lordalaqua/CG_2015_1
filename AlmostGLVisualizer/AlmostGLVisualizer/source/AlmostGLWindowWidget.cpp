@@ -18,9 +18,8 @@ void AlmostGLWindowWidget::initializeGL()
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClearDepth(1);
     loadModel("C:/Projects/CG_2015_1/OpenGLVisualizer/OpenGLVisualizer/Resources/cow_up.txt");
-    resetCamera();
-    GL.light.sources[0].position = GL.camera.getResetPosition();
     model.material = Material({ 1.f, 0.4f, 0.f }, { .5f, .5f, .5f }, { .5f, .5f, .5f }, 5);
+    resetCamera();
 }
 
 void AlmostGLWindowWidget::resizeGL(int width, int height)
@@ -77,7 +76,7 @@ void AlmostGLWindowWidget::recalculateOriginalPositions()
         model.min.z + (model.max.z - model.min.z) / 2 };
     float max = std::max(model.max.x - model.min.x, model.max.y - model.min.y);
     GL.camera.setResetLookAt(object_center);
-    GL.camera.setResetPosition(object_center + Vector3f{ 0, 0, 1.0f*(max) });
+    GL.camera.setResetPosition(object_center + Vector3f{ 0, 0, 1.4f*(max) });
 }
 
 
@@ -86,6 +85,8 @@ void AlmostGLWindowWidget::loadModel(std::string filename)
 {
     model.loadFromFile(filename);
     recalculateOriginalPositions();
+    GL.light.sources[0].position = GL.camera.getResetPosition();
+    //GL.light.sources[0].position.z *= -1;
     findWindingOrder();
     reset_camera = true;
 }

@@ -96,7 +96,7 @@ void OpenGLWindowWidget::paintGL()
             {
                 glColor3f(model.material.ambient[0], model.material.ambient[1], model.material.ambient[2]);
             }            
-            glNormal3f(-triangle.normal[i].x, -triangle.normal[i].y, -triangle.normal[i].z);
+            glNormal3f(triangle.normal[i].x, triangle.normal[i].y, triangle.normal[i].z);
             glVertex3f(triangle.vertex[i].x, triangle.vertex[i].y, triangle.vertex[i].z);
         }
     }
@@ -139,12 +139,9 @@ void OpenGLWindowWidget::updateLighting()
         glShadeModel(lighting_mode);
         GLfloat light_ambient[] = {ambient_light[0],ambient_light[1],ambient_light[2]};
         GLfloat color[] = { light_color[0],light_color[1],light_color[2]};
-        GLfloat light_position[] = { camera_original_position.x,
-            camera_original_position.y, camera_original_position.z };
         glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
-        glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 0);
+        glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
         glEnable(GL_LIGHT0);
-        glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, color);
         glLightfv(GL_LIGHT0, GL_SPECULAR, color);
         glLightfv(GL_LIGHT0, GL_POSITION, light_position);
@@ -193,7 +190,11 @@ void OpenGLWindowWidget::recalculateOriginalPositions()
         model.min.y + (model.max.y - model.min.y) / 2,
         model.min.z + (model.max.z - model.min.z) / 2 };
     float max = std::max(model.max.x - model.min.x, model.max.y - model.min.y);
-    camera_original_position = object_center + Vector3f{ 0, 0, 1.0f*(max) };
+    camera_original_position = object_center + Vector3f{ 0, 0, 1.4f*(max) };
+    light_position[0] = camera_original_position.z;
+    light_position[1] = camera_original_position.y;
+    light_position[2] = camera_original_position.x;
+    light_position[3] = 1;
 }
 
 void OpenGLWindowWidget::findWindingOrder()

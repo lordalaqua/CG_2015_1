@@ -121,6 +121,7 @@ private:    // Class data members
 
     Vector3f ambient_light;
     Vector3f light_color;
+    GLfloat light_position[4];
 
     // Translation control variable
     bool fixed_center;

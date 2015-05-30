@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <limits>
+#include "Matrix.h"
 
 /*
     3D model wrapper

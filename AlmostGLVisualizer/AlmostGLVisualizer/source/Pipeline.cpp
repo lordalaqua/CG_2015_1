@@ -195,7 +195,7 @@ namespace AlmostGL
         const Vector3f& normal, const Material& material)
     {
         Vector3f color = { 0.f, 0.f, 0.f };
-        Vector3f V = (vertex - camera.position()).normalize();
+        Vector3f V = (camera.position() - vertex).normalize();
         Vector3f N = getNormalized(normal);
         // Iterate over colors
         for (int i = 0; i < 3; ++i)
@@ -207,7 +207,7 @@ namespace AlmostGL
             // Calculate diffuse and specular component for each light source
             for (LightSource source : light.sources)
             {
-                Vector3f L = (vertex - source.position);
+                Vector3f L = (source.position-vertex);
                 float dist = L.length();
                 float att_factor = 1 / (
                     light.constant_attenuation +
@@ -217,11 +217,14 @@ namespace AlmostGL
                 att_factor = std::min(att_factor, 1.f);
                 L.normalize();
 
-                Vector3f R = ((2 * dotProduct(N, L)) * N - (L)).normalize();
+                float dotNL = dotProduct(N, L);
+                Vector3f S = (L + V).normalize();
+                //Vector3f R = ((2 * dotNL) * N - (L)).normalize();
 
-                float diffuse = material.diffuse[i] * (dotProduct(N, L));
-                float specular = material.specular[i] * pow(dotProduct(V, R), material.shine);;
-                float component = att_factor * source.color[i] * (diffuse + specular);
+                float diffuse = std::max(0.f, dotNL)*material.diffuse[i];
+                float specular = dotNL > 0 ? pow(std::max(0.f, dotProduct(S, N)),
+                    material.shine)*material.specular[i]: 0.f;
+                float component = att_factor*source.color[i]*(diffuse+specular);
 
                 // Add source diffuse+specular component to final color
                 color[i] += component;
