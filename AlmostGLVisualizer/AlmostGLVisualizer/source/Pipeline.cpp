@@ -32,22 +32,20 @@ namespace AlmostGL
                         triangles[i].v[j].color[j] = 1.f;
                     }
                 }
-                else // Lighting is on
+                else if (light.mode == FLAT)
+                {
+                    triangles[i].v[j].color = calculateIllumination(
+                        model.triangles[i].vertex[j],
+                        model.triangles[i].face_normal,
+                        model.material);
+                }
+                else // SMOOTH shading
                 {
                     triangles[i].v[j].color = calculateIllumination(
                         model.triangles[i].vertex[j],
                         model.triangles[i].normal[j],
                         model.material);
                 }
-            }
-            // When shading model is flat, make all vertices
-            // in the triangle the same color (average)
-            if (light.mode == FLAT)
-            {
-                Vector3f average_color = (triangles[i].v[0].color +
-                    triangles[i].v[1].color + triangles[i].v[2].color) / 3.f;
-                for (int j = 0; j < 3; ++j)
-                    triangles[i].v[j].color = average_color;
             }
             triangles[i].removed = false;
         }
