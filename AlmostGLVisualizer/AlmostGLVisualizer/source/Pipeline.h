@@ -13,6 +13,7 @@
 #include "AlmostGLParameters.h"
 #include "FrameBuffer.h"
 #include "LightParameters.h"
+#include "TextureParameters.h"
 
 /*
     AlmostGL namespace
@@ -34,6 +35,7 @@ namespace AlmostGL
     public:
         void runVertexPipeline(const Model3D& model);
         void runRasterization();
+        void bindTexture(std::string filename);
     public:
         Camera camera;
         Viewport viewport;
@@ -42,6 +44,7 @@ namespace AlmostGL
         LightParameters light;
         std::vector<Triangle> triangles;
         FrameBuffer buffer;
+        TextureParameters texture;
         bool FUN = false;
     private:        
         void convertTrianglesAndCalculateColor(const Model3D& model);
@@ -57,7 +60,21 @@ namespace AlmostGL
         void bresenham(const Vertex& start, const Vertex& end, FrameBuffer& buffer);
         Vertex createInterpolated(const Vertex& start, const Vertex& end, int x, int y);
         inline void writeToBuffer(Vertex v, FrameBuffer& buffer);
+        Vector3f calculateTextureColor(float x, float y);
         float degreeToRadians(float angle);
+        Vector3f bilinearInterpolatePixel(float x, float y, int level=0);
+        template<typename T>
+        T interpolate(T start, T end, float alpha);
+
+        void startMipMapLine(int start, int end)
+        {
+            mipmap_line_start = true;
+        }
+        int mipmap_last_x;
+        Vector2f mipmap_last_x_tex;
+        int mipmap_last_y;
+        Vector2f mipmap_last_y_tex;
+        bool mipmap_line_start;
     };
 } // namespace AlmostGL
 #endif // AlmostGLPipeline_h__

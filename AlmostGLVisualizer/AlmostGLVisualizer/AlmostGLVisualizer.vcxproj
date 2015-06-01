@@ -112,6 +112,7 @@
     <ClCompile Include="source\Matrix.inl" />
     <ClCompile Include="source\Model3D.cpp" />
     <ClCompile Include="source\OpenGLWindowWidget.cpp" />
+    <ClCompile Include="source\TextureParameters.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="almostglvisualizer.h">
@@ -142,6 +143,7 @@
     <ClInclude Include="source\LightParameters.h" />
     <ClInclude Include="source\Pipeline.h" />
     <ClInclude Include="source\FrameBuffer.h" />
+    <ClInclude Include="source\TextureParameters.h" />
     <ClInclude Include="source\Viewport.h" />
     <CustomBuild Include="source\AlmostGLWindowWidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

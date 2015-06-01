@@ -363,4 +363,38 @@ void AlmostGLVisualizer::setupWidgetConnections()
     { 
         ui.sliderRotZ->setValue(0);
     });
+    // ======================= Texture Mapping Controls ========================
+    connect(ui.enableTexCheckBox, &QCheckBox::toggled, [&]
+    {
+        ui.almostGLWidget->toggleTextureMapping(ui.enableTexCheckBox->isChecked());
+        ui.openGLWidget->toggleTextureMapping(ui.enableTexCheckBox->isChecked());
+    });
+    connect(ui.decalButton, &QRadioButton::toggled, [&]
+    {
+        ui.almostGLWidget->setTextureMapMode(AlmostGL::DECAL);
+        ui.openGLWidget->setTextureMapMode(GL_DECAL);
+    });
+    connect(ui.modulateButton, &QRadioButton::toggled, [&]
+    {
+        ui.almostGLWidget->setTextureMapMode(AlmostGL::MODULATE);
+        ui.openGLWidget->setTextureMapMode(GL_MODULATE);
+    });
+    connect(ui.nearestNButton, &QRadioButton::toggled, [&]
+    {
+        ui.almostGLWidget->setTextureMapFilter(AlmostGL::NEAREST);
+        ui.openGLWidget->setTextureMapMinFilter(QOpenGLTexture::Nearest);
+        ui.openGLWidget->setTextureMapMagFilter(QOpenGLTexture::Nearest);
+    });
+    connect(ui.bilinearButton, &QRadioButton::toggled, [&]
+    {
+        ui.almostGLWidget->setTextureMapFilter(AlmostGL::LINEAR);
+        ui.openGLWidget->setTextureMapMinFilter(QOpenGLTexture::Linear);
+        ui.openGLWidget->setTextureMapMagFilter(QOpenGLTexture::Linear);
+    });
+    connect(ui.mipmapButton, &QRadioButton::toggled, [&]
+    {
+        ui.almostGLWidget->setTextureMapFilter(AlmostGL::MIPMAP);
+        ui.openGLWidget->setTextureMapMinFilter(QOpenGLTexture::LinearMipMapLinear);
+        ui.openGLWidget->setTextureMapMagFilter(QOpenGLTexture::Linear);
+    });
 }

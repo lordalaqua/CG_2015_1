@@ -3,6 +3,7 @@
 
 #include "QTWidgets/QOpenGLWidget"
 #include "QOpenGLFunctions"
+#include "QOpenGLTexture"
 #include <QTimer>
 #include "GL/GLU.h"
 #include <cmath>
@@ -74,6 +75,12 @@ public slots:
     float getSourceLightR() { return light_color[0]; }
     float getSourceLightG() { return light_color[1]; }
     float getSourceLightB() { return light_color[2]; }
+
+    void toggleTextureMapping(bool v) { texture_on = v; }
+    void setTextureMapMode(GLenum m) { tex_mode = m; }
+    void setTextureMapMinFilter(QOpenGLTexture::Filter f) { min_filter = f; }
+    void setTextureMapMagFilter(QOpenGLTexture::Filter f) { mag_filter = f; }
+
     // Lighting, vertex order and polygon mode(polygons,wireframe,etc)controls
     void toggleLighting(bool is_on);
     void setLightingMode(GLenum mode);
@@ -82,6 +89,9 @@ public slots:
 
     // Model load interface
     void loadModel(std::string filename);
+
+    // Texture load
+    void loadTexture(std::string filename);
     
     //Reset Camera
     void setCameraReset();
@@ -138,6 +148,15 @@ private:    // Class data members
     Vector3f camera_x;
     Vector3f camera_y;
     Vector3f camera_z;
+
+    // Texture
+    QOpenGLTexture texture;
+    bool texture_loaded;
+    bool texture_on;
+    bool update_texture;
+    QOpenGLTexture::Filter min_filter;
+    QOpenGLTexture::Filter mag_filter;
+    GLenum tex_mode;
 
     // Flags for keeping track of what needs updating
     bool update_camera;

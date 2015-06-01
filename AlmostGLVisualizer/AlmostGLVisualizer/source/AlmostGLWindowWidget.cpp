@@ -4,7 +4,10 @@ AlmostGLWindowWidget::AlmostGLWindowWidget(QWidget *parent) : QOpenGLWidget(pare
 , reset_camera(false)
 , fixed_center(false)
 {
-    GL.polygon_mode = AlmostGL::POINTS;
+    GL.polygon_mode = AlmostGL::FILL;
+    GL.texture.enabled = false;
+    GL.texture.mode = AlmostGL::DECAL;
+    GL.texture.filter = AlmostGL::LINEAR;
     GL.light.ambient_color = { 0.5f, 0.5f, 0.5f };
     GL.light.sources.push_back(AlmostGL::LightSource());
     GL.light.sources[0].color = { 1.f, 1.f, 1.f };
@@ -17,7 +20,8 @@ void AlmostGLWindowWidget::initializeGL()
     initializeOpenGLFunctions();
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClearDepth(1);
-    loadModel("C:/Projects/CG_2015_1/OpenGLVisualizer/OpenGLVisualizer/Resources/cow_up.txt");
+    loadModel("C:/Projects/CG_2015_1/AlmostGLVisualizer/AlmostGLVisualizer/Resources/cube_text.in");
+    GL.bindTexture("C:/Projects/CG_2015_1/AlmostGLVisualizer/AlmostGLVisualizer/Resources/checker_8x8.jpg");
     model.material = Material({ 1.f, 0.4f, 0.f }, { .5f, .5f, .5f }, { .5f, .5f, .5f }, 5);
     resetCamera();
 }

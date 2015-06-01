@@ -37,6 +37,13 @@ bool Model3D::loadFromFile(const std::string& filename)
             materials.push_back(Material(ambient, diffuse, specular, shine));
         }
 
+        // Find whether object is textured
+        std::string tex;
+        file >> trash >> trash >> tex;
+        bool textured = false;
+        if (tex == "YES")
+            textured = true;
+
         // Read until end of line and next line which contains comments
         std::getline(file, trash);
         std::getline(file, trash);
@@ -51,6 +58,25 @@ bool Model3D::loadFromFile(const std::string& filename)
                 file >> new_tri.normal[j].x >> new_tri.normal[j].y >> new_tri.normal[j].z;
                 new_tri.normal[j].normalize();
                 file >> new_tri.material_index[j];
+                if (textured)
+                {
+                    file >> new_tri.texture[j].x >> new_tri.texture[j].y;
+                }
+                else
+                {
+                    switch (j)
+                    {
+                    case 0:
+                        new_tri.texture[j] = { 0.f, 0.f };
+                        break;
+                    case 1:
+                        new_tri.texture[j] = { 0.f, 1.f };
+                        break;
+                    case 2:
+                        new_tri.texture[j] = { 1.f, 0.f };
+                        break;
+                    }                    
+                }
                 updateBoundingBox(new_tri.vertex[j]);
             }
             file >> trash >> trash >> new_tri.face_normal.x >> new_tri.face_normal.y >> new_tri.face_normal.z;

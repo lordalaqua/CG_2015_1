@@ -21,7 +21,7 @@ namespace AlmostGL
             for (int j = 0; j < 3; ++j) // iterate over vertices in the triangle
             {
                 triangles[i].v[j].pos = model.triangles[i].vertex[j];
-
+                triangles[i].v[j].texture = model.triangles[i].texture[j];
                 // Calculate color
                 if (light.mode == NONE)
                 {
@@ -123,19 +123,10 @@ namespace AlmostGL
             for (int i = 0; i < 3; ++i)
             {
                 float w = triangle.v[i].pos.w;
-                triangle.v[i].pos.x /= w;
-                triangle.v[i].pos.y /= w;
-                triangle.v[i].pos.z /= w;
-                triangle.v[i].pos.w /= w;
-
-                triangle.v[i].color[0] /= w;
-                triangle.v[i].color[1] /= w;
-                triangle.v[i].color[2] /= w;
-
+                triangle.v[i].pos /= w;
+                triangle.v[i].color /= w;
+                triangle.v[i].texture /= w;
                 triangle.v[i].interpolation_factor = 1 / w;
-
-                // TODO: add texture coordinates
-
             }
         }
     }
@@ -263,6 +254,7 @@ namespace AlmostGL
     {
         std::sort(std::begin(triangle.v), std::end(triangle.v),
             [](const Vertex& a, const Vertex& b) { return a.pos.y < b.pos.y; });
+        
         int y_start = triangle.v[0].pos.y;
         int y_end = triangle.v[2].pos.y;
         int start_a = 0, end_a = 1;
@@ -273,6 +265,13 @@ namespace AlmostGL
             / (triangle.v[end_b].pos.y - triangle.v[start_b].pos.y);
         float x_a = triangle.v[start_a].pos.x;
         float x_b = triangle.v[start_b].pos.x;
+
+        /* Tentative Mip Map storage variables*/
+        mipmap_last_x = triangle.v[0].pos.x;
+        mipmap_last_x_tex = { triangle.v[0].texture.x*texture.width(), triangle.v[0].texture.y*texture.height() };
+        mipmap_last_y = triangle.v[0].pos.y;
+        mipmap_last_y_tex = { triangle.v[0].texture.x*texture.width(), triangle.v[0].texture.y*texture.height() };
+
         for (int y = y_start; y <= y_end; ++y)
         {
             if ((int)triangle.v[end_a].pos.y == y)
@@ -294,6 +293,8 @@ namespace AlmostGL
             bresenham(v1, v2, buffer);
             x_a += slope_a;
             x_b += slope_b;
+            mipmap_last_y = y;
+            mipmap_last_y_tex = { triangle.v[end_a].texture.x*texture.width(), triangle.v[end_a].texture.y*texture.height() };
         }
     }
 
@@ -313,7 +314,10 @@ namespace AlmostGL
             int inc_x = deltax > 0 ? 1 : -1;
             while (inc_x == 1 ? x <= end.pos.x : x >= end.pos.x)
             {
-                writeToBuffer(createInterpolated(start, end, x, y), buffer);
+                Vertex v = createInterpolated(start, end, x, y);
+                writeToBuffer(v, buffer);
+                mipmap_last_x = x;
+                mipmap_last_x_tex = { v.texture.x / v.interpolation_factor, v.texture.x / v.interpolation_factor };
                 x = x + inc_x;
             }
         }
@@ -364,6 +368,7 @@ namespace AlmostGL
             (1 - alpha)*start.pos.z + alpha*start.pos.z,
             (1 - alpha)*start.pos.w + alpha*start.pos.w };
         v.color = (1 - alpha)*start.color + alpha*end.color;
+        v.texture = (1 - alpha)*start.texture + alpha*end.texture;
         v.interpolation_factor = (1 - alpha)*start.interpolation_factor
             + alpha*end.interpolation_factor;
         return v;
@@ -371,13 +376,87 @@ namespace AlmostGL
 
     void Pipeline::writeToBuffer(Vertex v, FrameBuffer& buffer)
     {
-        v.color /= v.interpolation_factor;
+        if (texture.enabled)
+        {
+            v.texture /= v.interpolation_factor;
+            if (v.texture.x > 1.f) v.texture.x = 1.f;
+            if (v.texture.x < 0.f) v.texture.x = 0.f;
+            if (v.texture.y > 1.f) v.texture.y = 1.f;
+            if (v.texture.y < 0.f) v.texture.y = 0.f;
+            
+            Vector3f tex_color = calculateTextureColor(v.texture.x, v.texture.y);
+            if (texture.mode == MODULATE)
+            {
+                v.color /= v.interpolation_factor;
+                v.color *= tex_color;
+            }
+            else // if (texture.mode == DECAL)
+            {
+                v.color = tex_color;
+            }                
+        }
+        else
+        {
+            v.color /= v.interpolation_factor;
+        }        
         buffer.writeVertex(v);
     }
+
+    void Pipeline::bindTexture(std::string filename)
+    {
+        texture.loadImage(filename);
+    }
+
+    Vector3f Pipeline::calculateTextureColor(float x, float y)
+    {
+        Vector3f color;
+        int w = texture.width(), h = texture.height();
+        if (texture.filter == NEAREST)
+        {
+            int x_nn = round(x*w);
+            int y_nn = round(y*h);
+            color = texture.getPixelColor(x_nn, y_nn);
+        }
+        else if (texture.filter == LINEAR)
+        {
+            color = bilinearInterpolatePixel(x, y);
+        }
+        else // MIPMAP
+        {
+            float p_x = x*texture.width(), p_y = y*texture.height();
+            float dx = sqrt(pow(p_x - mipmap_last_x_tex.x, 2) + pow(p_y - mipmap_last_x_tex.y, 2));
+            float dy = sqrt(pow(p_x - mipmap_last_y_tex.x, 2) + pow(p_y - mipmap_last_y_tex.y, 2));
+            float level = log2f(std::max(dx, dy));
+            int min_level = floor(level), max_level = ceil(level);
+            float alpha = level - min_level;
+            color = interpolate(bilinearInterpolatePixel(x, y, min_level),
+                bilinearInterpolatePixel(x, y, max_level), alpha);
+        }
+        return color;
+    }
+
+    template<typename T>
+    T Pipeline::interpolate(T start, T end, float alpha)
+    {
+        return (1 - alpha)*start + alpha*end;
+    }
+
 
     float Pipeline::degreeToRadians(float angle)
     {
         return angle*(3.14159265 / 180);
+    }
+
+    Vector3f Pipeline::bilinearInterpolatePixel(float x, float y, int level/*=0*/)
+    {
+        float p_x = x*texture.width(), p_y = y*texture.height();
+        float x0 = floor(p_x), x1 = ceil(p_x), y0 = floor(p_y), y1 = ceil(p_y);
+        float alpha_x = p_x - x0, alpha_y = p_y - y0;
+        Vector3f color_y0 = interpolate(texture.getPixelColor(x0, y0,level),
+            texture.getPixelColor(x1, y0), alpha_x);
+        Vector3f color_y1 = interpolate(texture.getPixelColor(x0, y1,level),
+            texture.getPixelColor(x1, y1), alpha_x);
+        return interpolate(color_y0, color_y1, alpha_y);
     }
 
 }

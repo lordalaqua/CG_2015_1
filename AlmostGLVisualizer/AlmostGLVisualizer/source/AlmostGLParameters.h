@@ -8,6 +8,7 @@ namespace AlmostGL
     {
         Vector4f pos;
         Vector3f color;
+        Vector2f texture;
         float interpolation_factor;
     };
 

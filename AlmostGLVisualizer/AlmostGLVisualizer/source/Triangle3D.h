@@ -14,6 +14,7 @@ class Triangle3D
 public:
     Vector3f vertex[3];
     Vector3f normal[3];
+    Vector2f texture[3];
     int material_index[3];
     Vector3f face_normal;
 };

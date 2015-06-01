@@ -97,6 +97,11 @@ signals:
     void rotateCameraX(int angle) { GL.camera.rotateU(angle); update_camera = true; }
     void rotateCameraY(int angle) { GL.camera.rotateV(angle); update_camera = true; }
     void rotateCameraZ(int angle) { GL.camera.rotateN(angle); update_camera = true; }
+
+    void toggleTextureMapping(bool v) { GL.texture.enabled = v; }
+    void setTextureMapMode(AlmostGL::TextureMode m) { GL.texture.mode = m; }
+    void setTextureMapFilter(AlmostGL::TextureFilter f) { GL.texture.filter = f; }
+
 private:
     void updateCamera();
     void resetCamera();

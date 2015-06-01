@@ -1,4 +1,5 @@
 #include "OpenGLWindowWidget.h"
+#include "QGLWidget"
 
 /* Initializes Class members to starting values */
 OpenGLWindowWidget::OpenGLWindowWidget(QWidget *parent) 
@@ -10,7 +11,7 @@ OpenGLWindowWidget::OpenGLWindowWidget(QWidget *parent)
 , camera_x({ 1, 0, 0 })
 , camera_y({ 0, 1, 0 })
 , camera_z({ 0, 0,-1 })
-, polygon_mode(GL_POINT)
+, polygon_mode(GL_FILL)
 , winding_order(GL_CCW)
 , lighting_on(false)
 , lighting_mode(GL_SMOOTH)
@@ -19,6 +20,13 @@ OpenGLWindowWidget::OpenGLWindowWidget(QWidget *parent)
 , update_order(false)
 , reset_camera(false)
 , update_lighting(false)
+, texture(QOpenGLTexture::Target2D)
+, texture_on(false)
+, texture_loaded(false)
+, update_texture(true)
+, tex_mode(GL_DECAL)
+, min_filter(QOpenGLTexture::Linear)
+, mag_filter(QOpenGLTexture::Linear)
 {
     ambient_light = { 0.5f, 0.5f, 0.5f };
     light_color = { 1.f, 1.f, 1.f };
@@ -38,8 +46,9 @@ void OpenGLWindowWidget::initializeGL()
     glCullFace(GL_BACK);
     glEnable(GL_NORMALIZE);
     glEnable(GL_DEPTH_TEST);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     resetCamera();
-    loadModel("C:/Projects/CG_2015_1/OpenGLVisualizer/OpenGLVisualizer/Resources/cow_up.txt");
+    loadModel("C:/Projects/CG_2015_1/AlmostGLVisualizer/AlmostGLVisualizer/Resources/cube_text.in");
     model.material = Material({ 1.f, 0.4f, 0.f }, { .5f, .5f, .5f }, { .5f, .5f, .5f }, 5);
 }
 
@@ -52,7 +61,7 @@ void OpenGLWindowWidget::resizeGL(int width, int height)
 
 /* Drawing function executed for every frame */
 void OpenGLWindowWidget::paintGL()
-{
+{    
     if (reset_camera)
     {
         resetCamera();
@@ -73,6 +82,15 @@ void OpenGLWindowWidget::paintGL()
         updateLighting();
         update_lighting = false;
     }
+    if (texture_on)//update_texture)
+    {
+        if (!texture_loaded)
+        {
+            loadTexture("C:/Projects/CG_2015_1/AlmostGLVisualizer/AlmostGLVisualizer/Resources/checker_8x8.jpg");
+            //texture_loaded = true;
+        }
+        //update_texture = false;
+    }
 
     glPolygonMode(GL_FRONT_AND_BACK, polygon_mode);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -80,7 +98,11 @@ void OpenGLWindowWidget::paintGL()
     for (const auto& triangle : model.triangles)
     {
         for (int i = 0; i < 3; ++i)
-        {            
+        {   
+            if (texture_on)
+            {
+                glTexCoord2f(triangle.texture[i].x, triangle.texture[i].y);
+            }
             if (lighting_on)
             {
                 GLfloat ambient[] = { model.material.ambient[0], model.material.ambient[1], model.material.ambient[2] };
@@ -93,9 +115,9 @@ void OpenGLWindowWidget::paintGL()
                 glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, shine);
             }
             else
-            {
+            {                    
                 glColor3f(model.material.ambient[0], model.material.ambient[1], model.material.ambient[2]);
-            }            
+            }
             glNormal3f(triangle.normal[i].x, triangle.normal[i].y, triangle.normal[i].z);
             glVertex3f(triangle.vertex[i].x, triangle.vertex[i].y, triangle.vertex[i].z);
         }
@@ -181,6 +203,20 @@ void OpenGLWindowWidget::loadModel(std::string filename)
     recalculateOriginalPositions();
     update_order = true;
     reset_camera = true;
+}
+
+void OpenGLWindowWidget::loadTexture(std::string filename)
+{
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, tex_mode);
+    texture.setMinificationFilter(min_filter);
+    texture.setMagnificationFilter(mag_filter);
+    // Load texture from Image, and generate MipMaps (default)
+    QImage img(filename.c_str());
+    texture.setData(img.mirrored());
+    texture.bind();
+    texture.wrapMode(QOpenGLTexture::DirectionS);
+    texture.wrapMode(QOpenGLTexture::DirectionT);
 }
 
 void OpenGLWindowWidget::recalculateOriginalPositions()
@@ -327,4 +363,6 @@ void OpenGLWindowWidget::toggleLighting(bool is_on)
 {
     lighting_on = is_on; update_lighting = true;
 }
+
+
 
