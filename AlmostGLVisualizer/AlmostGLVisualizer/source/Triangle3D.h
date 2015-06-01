@@ -4,9 +4,9 @@
 #include "Vector.h"
 /*
     3D triangle (semi-plane) wrapper
-    Stores information about a CG triangle for rendering,
+    Stores information about a triangle in 3D space for rendering,
     such as vertices position, normal vector and an index
-    for the vertex material. Used by Model3D class.
+    for the vertex material.
 */
 
 class Triangle3D

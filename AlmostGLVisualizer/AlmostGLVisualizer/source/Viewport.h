@@ -1,6 +1,10 @@
 #ifndef Viewport_h__
 #define Viewport_h__
 
+/*
+	Viewport class to hold information related to the viewport in the AlmostGL pipeline.
+*/
+
 class Viewport
 {
 public:

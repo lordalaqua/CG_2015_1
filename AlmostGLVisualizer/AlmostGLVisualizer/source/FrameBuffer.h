@@ -4,6 +4,11 @@
 #include <vector>
 #include "AlmostGLParameters.h"
 
+/*
+	Frame Buffer Class to encapsulate data manipulaton logic
+	- Also implements Z-buffering
+*/
+
 namespace AlmostGL
 {
     class FrameBuffer

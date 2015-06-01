@@ -4,6 +4,10 @@
 #include "Vector.h"
 #include "AlmostGLParameters.h"
 
+/*
+	Structure for holding lighting information for the AlmostGL pipeline
+*/
+
 namespace AlmostGL
 {
     struct LightSource

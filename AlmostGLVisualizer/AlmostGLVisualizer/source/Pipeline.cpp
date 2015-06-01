@@ -1,9 +1,9 @@
 #include "Pipeline.h"
 namespace AlmostGL
 {
+	/* Run Geometry Pipeline*/
     void Pipeline::runVertexPipeline(const Model3D& model)
     {
-        // Transform model vertices to homogeneous coordinates and calculate color
         convertTrianglesAndCalculateColor(model);
         modelViewProjectionTransform();
         clipping();
@@ -12,6 +12,8 @@ namespace AlmostGL
         backFaceCulling();       
     }
 
+	/* Transform Model Triangles into AlmostGL triangles and calculate color
+	or illumination for each vertex */
     void Pipeline::convertTrianglesAndCalculateColor(const Model3D& model)
     {
         triangles.clear();
@@ -50,7 +52,7 @@ namespace AlmostGL
             triangles[i].removed = false;
         }
     }
-
+	
     void Pipeline::modelViewProjectionTransform()
     {
         // Compute View Matrix
@@ -179,7 +181,9 @@ namespace AlmostGL
         triangles.erase(std::remove_if(triangles.begin(), triangles.end(),
             [](Triangle& tri) { return tri.removed; }), triangles.end());
     }
-
+	
+	/* Calculate illumination for a vertex based on its properties and using the
+	Phong Lighting Model, approximating OpenGL's */
     Vector3f Pipeline::calculateIllumination(const Vector3f& vertex,
         const Vector3f& normal, const Material& material)
     {
@@ -222,6 +226,7 @@ namespace AlmostGL
         return color;
     }
 
+	/* Draw 2D triangles as Points, outline (wireframe) or filled(rasterizing) */
     void Pipeline::runRasterization()
     {
         for (auto triangle : triangles)
@@ -242,13 +247,14 @@ namespace AlmostGL
             }
             if (polygon_mode == FILL)
             {
-                rasterTriangle(triangle, buffer, polygon_mode);
+                rasterTriangle(triangle, buffer);
             }
         }
     }
-
-    void Pipeline::rasterTriangle(Triangle& triangle, FrameBuffer& buffer,
-        PolygonMode mode)
+	
+	/* Rasterize a triangle onto the screen interpolating the colors of its 
+	vertices */
+    void Pipeline::rasterTriangle(Triangle& triangle, FrameBuffer& buffer)
     {
         std::sort(std::begin(triangle.v), std::end(triangle.v),
             [](const Vertex& a, const Vertex& b) { return a.pos.y < b.pos.y; });
@@ -264,7 +270,7 @@ namespace AlmostGL
         float x_a = triangle.v[start_a].pos.x;
         float x_b = triangle.v[start_b].pos.x;
 
-        /* Tentative Mip Map storage variables*/
+        /* Tentative Mip Map storage variables, still not working*/
         mipmap_last_x = triangle.v[0].pos.x;
         mipmap_last_x_tex = { triangle.v[0].texture.x*texture.width(), triangle.v[0].texture.y*texture.height() };
         mipmap_last_y = triangle.v[0].pos.y;
@@ -295,7 +301,8 @@ namespace AlmostGL
             mipmap_last_y_tex = { triangle.v[end_a].texture.x*texture.width(), triangle.v[end_a].texture.y*texture.height() };
         }
     }
-
+	
+	/* Bresenham's line drawing algorithm */
     void Pipeline::bresenham(const Vertex& start, const Vertex& end,
         FrameBuffer& buffer)
     {
@@ -355,6 +362,8 @@ namespace AlmostGL
         }
     }
     
+	/* Create an interpolated vertex based on start and end vertices and a 
+	2d point guaranteed between the two. */
     Vertex Pipeline::createInterpolated(const Vertex& start,
         const Vertex& end, int x, int y)
     {
@@ -371,7 +380,8 @@ namespace AlmostGL
             + alpha*end.interpolation_factor;
         return v;
     }
-
+	
+	/* Write a vertex to the frame buffer, resampling a texture when necessary. */
     void Pipeline::writeToBuffer(Vertex v, FrameBuffer& buffer)
     {
         if (texture.enabled)
@@ -381,7 +391,7 @@ namespace AlmostGL
             if (v.texture.x < 0.f) v.texture.x = 0.f;
             if (v.texture.y > 1.f) v.texture.y = 1.f;
             if (v.texture.y < 0.f) v.texture.y = 0.f;
-            
+           
             Vector3f tex_color = calculateTextureColor(v.texture.x, v.texture.y);
             if (texture.mode == MODULATE)
             {
@@ -395,6 +405,7 @@ namespace AlmostGL
         }
         else
         {
+			// No texture mapping
             v.color /= v.interpolation_factor;
         }        
         buffer.writeVertex(v);
@@ -404,7 +415,8 @@ namespace AlmostGL
     {
         texture.loadImage(filename);
     }
-
+	
+	/* Resample texture in desired coordinates interpolating as necessary */
     Vector3f Pipeline::calculateTextureColor(float x, float y)
     {
         Vector3f color;
@@ -444,7 +456,8 @@ namespace AlmostGL
     {
         return angle*(3.14159265 / 180);
     }
-
+	
+	/* Perform bilinear interpolation of texture values */
     Vector3f Pipeline::bilinearInterpolatePixel(float x, float y, int level/*=0*/)
     {
         float p_x = x*texture.width(), p_y = y*texture.height();

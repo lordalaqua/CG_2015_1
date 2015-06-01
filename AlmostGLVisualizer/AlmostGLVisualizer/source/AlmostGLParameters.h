@@ -2,6 +2,10 @@
 #define AlmostGLParameters_h__
 #include "Vector.h"
 
+/*
+	Utilitary structures for the AlmostGL Pipeline
+*/
+
 namespace AlmostGL
 {
     struct Vertex

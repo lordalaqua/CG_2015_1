@@ -22,7 +22,7 @@
     3D scenes in an OpenGL-like fashion, transforming a description of 3D vertices 
     into a 2D pixel image, considering a virtual camera in the 3D space.
 
-    The main function runAlmostGLPipeline performs the transformations on a 
+    The main function runVertexPipeline performs the transformations on a 
     3D model received as a parameter, and returns the transformed vertices
     in the 2D pixel space.
 */
@@ -31,12 +31,15 @@ namespace AlmostGL
 
     class Pipeline
     {
-
     public:
+		/* Run Geometry pipeline, output vertices in screen coordinates */
         void runVertexPipeline(const Model3D& model);
+		/* Run Rasterization pipeline, write fragments to screen */
         void runRasterization();
+		/* load the texture to be used*/
         void bindTexture(std::string filename);
     public:
+		/* Public access members, keep track of pipeline state */
         Camera camera;
         Viewport viewport;
         WindingOrder winding_order;
@@ -55,8 +58,7 @@ namespace AlmostGL
         void backFaceCulling();
         Vector3f calculateIllumination(const Vector3f& vertex,
             const Vector3f& normal, const Material& material);
-        void rasterTriangle(Triangle& triangle, FrameBuffer& buffer,
-            PolygonMode mode);
+        void rasterTriangle(Triangle& triangle, FrameBuffer& buffer);
         void bresenham(const Vertex& start, const Vertex& end, FrameBuffer& buffer);
         Vertex createInterpolated(const Vertex& start, const Vertex& end, int x, int y);
         inline void writeToBuffer(Vertex v, FrameBuffer& buffer);

@@ -7,6 +7,10 @@
 #include "AlmostGLParameters.h"
 #include "Vector.h"
 
+/*
+	Structure to hold texture mapping information for the AlmostGL pipeline
+*/
+
 namespace AlmostGL
 {
     enum TextureFilter
